@@ -1,0 +1,15 @@
+extends layout 
+
+block content 
+  h1 Edit Your Profile
+  form(action="" method="POST")  
+    label(for="bio") Bio 
+    textarea(name="bio", cols="30", rows="10") 
+      if profile 
+        | #{profile.bio}
+    label(for="media") Add Photos or Videos 
+    button Submit
+    //- do something
+      
+
+

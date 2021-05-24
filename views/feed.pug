@@ -1,0 +1,13 @@
+extends layout 
+
+block content 
+  h1=user.first_name + "'s Feed"
+  if friends && friends.length > 0
+    h2 What your friends have been up to:
+    each friend in friends
+      each post in friend.posts 
+        p= post.text
+  if posts && posts.length > 0
+    h2 What you've been up to: 
+    each post in posts 
+      p= post.text

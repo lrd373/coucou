@@ -1,0 +1,21 @@
+extends layout 
+
+block content 
+  h1 Look up a friend 
+  h3= errorMsg
+  form(action="/search-friend" method="POST")
+    label(for="first_name") First name 
+    input(name="first_name" placeholder="first name" type="text")
+    label(for="last_name") Last name 
+    input(name="last_name" placeholder="last name" type="text")
+    h3 OR
+    label(for="username") Email
+    input(name="username" placeholder="email" type="email")
+    button Submit
+
+  if foundUsers && foundUsers.length > 0
+    form(action="/add-friend" method="POST")
+      each foundUser in foundUsers 
+        label(for=foundUser.username) #{foundUser.fullname}
+        input(name=foundUser.username value=foundUser._id type="checkbox") 
+      button Add friend  

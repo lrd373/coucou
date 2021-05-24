@@ -1,0 +1,47 @@
+extends layout 
+
+block content 
+  h1= user.fullname
+  - if (currentUser._id.toString() === user._id.toString()) 
+    a(href="/log-out") Log Out 
+  .profileBio
+    if profile.bio 
+      p= profile.bio
+      - if (currentUser._id.toString() === user._id.toString())
+        a(href="/profile-edit") Edit your bio
+    else
+      - if (currentUser._id.toString() === user._id.toString())
+        a(href="/profile-edit") Add a bio 
+  .profileFriends 
+    - if (currentUser._id.toString() === user._id.toString())
+      a(href="/add-friend") Add a friend 
+    if user.friends.length > 0
+      h2 Your Friends
+      each friend in user.friends 
+        a(href=friend.url) #{friend.fullname}
+  .profilePosts 
+    h2 Your Posts
+    - if (currentUser._id.toString() === user._id.toString()) 
+      a(href="/create-post") Create new post
+    if user.posts.length > 0
+      each post in user.posts
+        .postCard 
+          p.postText= post.text
+          p.postDate Last Updated: #{post.date_last_updated_local}
+    if newPostForm 
+      a(href=profile.url) X 
+      form(action="/create-post" method="POST")
+         label(for="text") Your Message 
+         textarea(name="text", cols="30", rows="10")
+          //-  Media to come
+         button Submit  
+  .profileMedia 
+    h2 Your Photos
+    if profile.media 
+      each imgOrVideo in profile.media 
+        //- do something
+    - if (currentUser._id.toString() === user._id.toString())
+      a(href="") Add some photos or videos!
+      
+
+

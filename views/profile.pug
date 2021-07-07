@@ -1,47 +1,82 @@
 extends layout 
 
 block content 
-  h1= user.fullname
-  - if (currentUser._id.toString() === user._id.toString()) 
-    a(href="/log-out") Log Out 
-  .profileBio
-    if profile.bio 
-      p= profile.bio
-      - if (currentUser._id.toString() === user._id.toString())
-        a(href="/profile-edit") Edit your bio
-    else
-      - if (currentUser._id.toString() === user._id.toString())
-        a(href="/profile-edit") Add a bio 
-  .profileFriends 
-    - if (currentUser._id.toString() === user._id.toString())
-      a(href="/add-friend") Add a friend 
-    if user.friends.length > 0
-      h2 Your Friends
-      each friend in user.friends 
-        a(href=friend.url) #{friend.fullname}
-  .profilePosts 
-    h2 Your Posts
-    - if (currentUser._id.toString() === user._id.toString()) 
-      a(href="/create-post") Create new post
-    if user.posts.length > 0
-      each post in user.posts
-        .postCard 
-          p.postText= post.text
-          p.postDate Last Updated: #{post.date_last_updated_local}
-    if newPostForm 
-      a(href=profile.url) X 
-      form(action="/create-post" method="POST")
-         label(for="text") Your Message 
-         textarea(name="text", cols="30", rows="10")
-          //-  Media to come
-         button Submit  
-  .profileMedia 
-    h2 Your Photos
-    if profile.media 
-      each imgOrVideo in profile.media 
-        //- do something
-    - if (currentUser._id.toString() === user._id.toString())
-      a(href="") Add some photos or videos!
+  .profileContent
+  
+    .profileHeader 
       
+      if newProfilePic 
+          .modalContainer
+            form(class="modalContent" action="/edit-profile-picture" method="POST" enctype="multipart/form-data")
+              label(for="profilePic") Upload your picture 
+              input(type="file" name="profilePic" accept="image/png, image/jpeg" required)
+              button.button Submit
+              a(class="editCancelBtn button" href="/profile") Cancel
 
+      .profilePicContainer
+        if profile.profilePic 
+          //- Display binary image
+          img(
+            class="profilePic"
+            src=`data:${profile.profilePic.img.contentType};base64,${Buffer.from(profile.profilePic.img.data).toString("base64")}`, 
+            alt=profile.profilePic.altText)
+          - if (currentUser._id.toString() === user._id.toString())
+            a(class="editProfilePic" href="/edit-profile-picture")
+              img(class="editIcon" src="/images/edit.png", alt="Edit profile picture")
+        else if (currentUser._id.toString() === user._id.toString())
+            a(class="editProfilePic" href="/edit-profile-picture") Add a profile picture
+      
+      .profileNameAndBio
+        h1.userFullName= user.fullname   
+        .profileBioContainer
+          if profile.bio 
+            p= profile.bio
+            - if (currentUser._id.toString() === user._id.toString())
+              a(class="editProfileBio" href="/profile-bio-edit")
+                img(class="editIcon" src="/images/edit.png", alt="Edit profile bio")
+          else
+            - if (currentUser._id.toString() === user._id.toString())
+              a(href="/profile-edit") Add a bio 
+    
+    .profileMedia 
+      h2.profileSectionHeader Photos
+      if newMediaForm 
+        .modalContainer
+          form(class="modalContent" action="/add-profile-media" method="POST" enctype="multipart/form-data") 
+            label(for="profilePic") Upload your picture
+            input(type="file" name="profileMedia" accept="image/png, image/jpeg" required)
+            button Submit
+            a(class="editCancelBtn" href="/profile") Cancel
+      if profile.media 
+        each img in profile.media 
+          img(
+          class="profileMediaPic"
+          src=`data:${img.img.contentType};base64,${Buffer.from(img.img.data).toString("base64")}`, 
+          alt=img.altText)
+      - if (currentUser._id.toString() === user._id.toString())
+        a(href="/add-profile-media") Add some photos
 
+    .profileFriends 
+      h2.profileSectionHeader Friends
+      - if (currentUser._id.toString() === user._id.toString())
+        a(href="/add-friend") Add a friend 
+      if user.friends.length > 0
+        each friend in user.friends 
+          a(href=friend.url) #{friend.fullname}
+
+    .profilePosts 
+      h2.profileSectionHeader Posts
+      - if (currentUser._id.toString() === user._id.toString()) 
+        a(href="/create-post") Create new post
+      if user.posts.length > 0
+        each post in user.posts
+          .postCard 
+            p.postText= post.text
+            p.postDate Last Updated: #{post.date_last_updated_local}
+      if newPostForm 
+        a(href=profile.url) X 
+        form(action="/create-post" method="POST")
+          label(for="text") Your Message 
+          textarea(name="text", cols="30", rows="10")
+            //-  Media to come
+          button Submit

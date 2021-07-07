@@ -1,10 +1,31 @@
 doctype html
 html
   head
-    title= title
+    title Coucou
+
+    //- Favicon
+    link(rel="shortcut icon" type="image/png" href="/images/macaw.png")
+
+    //- Google Fonts
+    link(rel="preconnect" href="https://fonts.gstatic.com")
+    link(href="https://fonts.googleapis.com/css2?family=KoHo:wght@200&family=Pattaya&display=swap" rel="stylesheet")
+
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
-    h1 Coucou 
-    a(href="/profile") Profile 
-    a(href="/feed") Feed 
+    header
+      .brand
+        img(id="coucou-macaw" src="/images/macaw.png", alt="Coucou logo")
+        h1.logo Coucou
+      nav 
+        a(href="/profile") Profile 
+        a(href="/feed") Feed
+        a(href="/log-out") Log Out  
     block content
+    
+    .flaticon
+      p Icons made by 
+        a(href="https://www.freepik.com" title="Freepik") Freepik 
+        | and 
+        a(href="https://www.flaticon.com/authors/becris" title="Becris") Becris 
+        | from 
+        a(href="https://www.flaticon.com/" title="Flaticon") www.flaticon.com

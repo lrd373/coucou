@@ -1,17 +1,24 @@
-
+const express = require('express');
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const createError = require('http-errors');
-const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const fs = require('fs');
 const mongoose = require('mongoose');
 mongoose.set('useFindAndModify', false);
 const Schema = mongoose.Schema;
 require('dotenv').config();
+
+// Image upload packages
+const formidable =  require('formidable');
+const crypto = require('crypto'); // to generate file name
+const multer = require('multer');
+const GridFsStorage = require('multer-gridfs-storage');
+const Grid = require('gridfs-stream');
 
 const indexRouter = require('./routes/index');
 
@@ -26,12 +33,39 @@ mongoose.connect(mongodb, {useNewUrlParser: true, useUnifiedTopology: true});
 // Get the default connection
 const db = mongoose.connection;
 
+// // Initiate variable for file stream with MongoDB Atlas
+// let gfs;
+// db.once('open', () => {
+//   gfs = Grid(db.db, mongoose.mongo);
+//   gfs.collection('Media');
+// });
+
+// // Create storage object
+// let storage = new GridFsStorage({
+//   url: mongodb,
+//   file: (req, file) => {
+//     return new Promise(
+//       (resolve, reject) => {
+//         const fileInfo = {
+//           filename: file.originalname,
+//           bucketName: "Media"
+//         }
+//         resolve(fileInfo);
+//       }
+//     );
+//   }
+// });
+
+// // Set the multer storage engine 
+// const upload = multer({ storage });
+
 // Bind connection to error event (to get notification of connection errors)
 db.on('error', console.error.bind(console, 'MongoDB connection error: '));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
 
 app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
@@ -41,6 +75,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(multer({ 
+  dest: './uploads/', 
+  rename: function(fieldname, filename){
+    return filename;
+  }
+}).any());
+
 
 
 // Configure passport authentication local strategy
@@ -79,6 +120,7 @@ app.use((req, res, next) => {
   res.locals.currentUser = req.user;
   next();
 });
+
 app.use('/', indexRouter);
 
 

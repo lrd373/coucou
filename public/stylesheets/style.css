@@ -1,9 +1,165 @@
+:root {
+  --macaw-pink: rgb(211, 50, 112);
+  --teal: #77ffff;
+}
+
 body {
- 
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font: 14px "KoHo", sans-serif;
+  margin: 0;
 }
 
 a {
-  display: block;
-  margin: 10px;
+  font-size: 1.25rem;
+  text-decoration: none;
 }
+
+p, label {
+  font-size: 1.25rem;
+}
+
+form > * {
+  display: block;
+  margin: 10px 0;
+}
+
+.button {
+  background-color: var(--macaw-pink);
+  border: none;
+  border-radius: 5px;
+  color: black;
+  font-size: 1.25rem;
+  font-weight: normal;
+  text-align: center;
+  padding: 5px;
+  width: max-content;
+}
+
+.editIcon {
+  width: 15px;
+  height: 15px;
+}
+
+.wavy-border {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Form modal styling */
+.modalContainer {
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */ 
+}
+
+.modalContent {
+  background-color: var(--teal);
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  width: 80%; 
+}
+
+/********************** Header **********************/
+header {
+  background-color: var(--teal);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 10px 0;
+  position: relative;
+  z-index: 10;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  margin: 0 10px;
+}
+
+.logo {
+  color: var(--macaw-pink);
+  display: inline;
+  font: 3rem "Pattaya", cursive; 
+  margin: 0 15px;
+  position: relative;
+  top: 5px;
+}
+
+#coucou-macaw {
+  display: inline;
+  width: 50px;
+  height: auto;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0 10px;
+}
+
+nav > * {
+  color: var(--macaw-pink);
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+/********************** Profile **********************/
+.profileContent {
+  display: block;
+  margin: auto;
+  width: 100%;
+}
+
+.profileSectionHeader {
+  margin: 0;
+}
+
+  /************ Profile Header *******************/
+
+  .profileHeader {
+    background-color: var(--teal);
+    display: flex;
+    justify-content: flex-start;
+    margin: 0;
+    padding: 2rem 2rem 0;
+  }
+
+  .userFullName {
+    font-size: 3.5rem;
+    margin: 0;
+  }
+
+  .profilePic {
+    background-color: white;
+    border-radius: 50%;
+    width: 200px;
+    height: auto;
+  }
+
+  .profileBioContainer {
+    display: flex;
+  }
+
+  /************ Profile Media ******************/
+  .profileMedia {
+    display: block;
+    margin: 0;
+  }
+
+  .profileMediaPic {
+    display: inline-block;
+    width: 100px;
+    height: auto;
+  }
+
+  .wavy-border.profileMediaTop {
+    position: relative;
+    bottom:-4px;
+  }

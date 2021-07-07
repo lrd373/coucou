@@ -8,6 +8,7 @@ const UserSchema = new Schema({
     last_name: { type: String, required: true },
     last_name_lower: { type: String },
     username: { type: String, required: true },
+    username_lower: { type: String, required: true },
     password: { type: String, required: true },
     posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
     friends: [{ type: Schema.Types.ObjectId, ref: 'User' }],

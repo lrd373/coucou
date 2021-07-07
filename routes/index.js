@@ -1,6 +1,9 @@
 const express = require('express');
 const async = require('async');
 const router = express.Router();
+const mongoose = require('mongoose');
+
+// Validation, sanitization, and encryption middleware
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
@@ -10,11 +13,22 @@ const { JSDOM } = require('jsdom');
 const window = new JSDOM('').window;
 const DOMPurify = createDOMPurify(window);
 
+// Image upload packages
+const fs = require('fs');
+const formidable =  require('formidable');
+const crypto = require('crypto'); // to generate file name
+const multer = require('multer');
+const GridFsStorage = require('multer-gridfs-storage');
+const Grid = require('gridfs-stream');
+const app = require('../app');
+
 
 const User = require('../models/userSchema');
 const Profile = require('../models/profileSchema');
 const Post = require('../models/postSchema');
 const Reaction = require('../models/reactionSchema');
+
+const profileController = require('../controllers/profileController');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -57,6 +71,7 @@ router.post('/sign-up', (req, res, next) => {
       last_name: req.body.last_name,
       last_name_lower: req.body.last_name.toLowerCase(),
       username: req.body.username,
+      username_lower: req.body.username.toLowerCase(),
       password: hashedPassword
     });
 
@@ -78,152 +93,51 @@ router.post('/sign-up', (req, res, next) => {
       }
     ], (err, results) => {
       if (err) { return next(err); }
-      console.log(results);
-      const profileUrl = '/profile/' + results.savedUser._id;
-      res.redirect(profileUrl); 
-      }
+    
+      req.login(results.savedUser, (err => {
+        if (!err) {
+          res.redirect(results.savedUser.url);
+        }
+      }));
+        
+    }
     );
   });
 });
 
 // Home page Profile redirect
-router.get('/profile', (req, res) => {
-  if (req.user) {
-    res.redirect('/profile/' + req.user._id);
-  } else {
-    res.redirect('/');
-  }
-});
+router.get('/profile', profileController.homePageRedirect);
+
+// *************************** PROFILE  ********************************
 
 // GET profile page
-router.get('/profile/:id', (req, res, next) => {
-  if (req.user) {
-    async.parallel({
-      user: function(callback) {
-        User.findById(req.params.id)
-        .populate('friends')
-        .populate('posts')
-        .exec(callback);
-      },
-      profile: function(callback) {
-        Profile.findOne({'user': req.params.id}).exec(callback);
-      }
-    }, (err, results) => {
-      if (err) { return next(err); }
-      res.render('profile', {currentUser: req.user, user: results.user, profile: results.profile});
-    });
-  } else {
-    res.redirect('/');
-  }
-  
-});
+router.get('/profile/:id', profileController.getProfilePage);
 
 // GET profile edit form
-router.get('/profile-edit', (req, res) => {
-  if (req.user) {
-    Profile.findOne({'user': req.user._id}).exec((err, profile) => {
-      if (err) { return next(err); }
-      res.render('profile-form', { profile: profile });
-    }); 
-  } else {
-    res.redirect('/');
-  }
-});
+router.get('/profile-bio-edit', profileController.getProfileBioEdit);
 
 // POST to profile edit form
-router.post('/profile-edit', (req, res, next) => {
+router.post('/profile-bio-edit', profileController.postToProfileBioEdit);
 
-  if (req.user) {
-    // Sanitize inputs
-    const cleanBio = DOMPurify.sanitize(req.body.bio);
+// GET edit profile pic page
+router.get('/edit-profile-picture', profileController.getProfilePicEdit);
 
-    // Find and update Profile object
-    async.waterfall([
-      function(callback) {
-        Profile.findOne({'user': req.user._id}).exec((err, profileData) => {
-          if (err) {return next(err); }
-          callback(null, profileData);
-        });
-      },
-      function(profileData, callback) {
-
-        const updatedProfile = new Profile({
-          media: profileData.media,
-          user: profileData.user,
-          _id: profileData._id,
-          bio: cleanBio
-        });
-
-        Profile.findByIdAndUpdate(profileData._id, updatedProfile, { new: true }, function(err, theProfile) {
-          if (err) { return next(err); }
-          callback(null, theProfile);
-        });
-      }
-    ], function(err, updatedProfile) {
-      if (err) { return next(err); }
-      res.redirect('/profile/'+req.user._id);
-    });
-  } else {
-    res.redirect('/');
-  }
-  
-});
+// POST edit profile pic page
+router.post('/edit-profile-picture', profileController.postProfilePicEdit);
 
 // GET new post form
-router.get('/create-post', (req, res, next) => {
-  if (req.user) {
-    async.parallel({
-      user: function(callback) {
-        User.findById(req.user._id)
-        .populate('friends')
-        .populate('posts')
-        .exec(callback);
-      },
-      profile: function(callback) {
-        Profile.findOne({'user': req.user._id}).exec(callback);
-      }
-    }, (err, results) => {
-      if (err) { return next(err); }
-      res.render('profile', {newPostForm: true, user: results.user, profile: results.profile});
-    });
-  } else {
-    res.redirect('/');
-  }
-});
+router.get('/create-post', profileController.getNewPostForm);
 
 // POST -- create new post
-router.post('/create-post', (req, res, next) => {
-  if (req.user) {
-    // Sanitize text input (** MEDIA TO COME)
-    const cleanMsg = DOMPurify.sanitize(req.body.text);
+router.post('/create-post', profileController.postNewPostForm);
 
-    // Create new post obj & save to Posts collection
-    const newPost = new Post({
-      text: cleanMsg,
-      date_created: new Date(),
-      date_last_updated: new Date(),
-      media: []
-    });
+// GET new profile media form
+router.get('/add-profile-media', profileController.getProfileMediaForm);
 
-    newPost.save(err => {
-      if (err) {return next(err); }
-    });
-  
-    // Create updated user object with new post information
-    let postsList = req.user.posts;
-    postsList.push(newPost);
-    
-    // Find and update user
-    User.findByIdAndUpdate(req.user._id, {'posts': postsList}, {new: true}, function(err, theUser) {
-      if (err) { return next(err); }
-      res.redirect(theUser.url);
-    });
-  } else {
-    res.redirect('/');
-  }
-});
+// POST to new profile media form
+router.post('/add-profile-media', profileController.postProfileMediaForm);
 
-
+// *************************** FEED  ********************************
 
 // GET feed
 router.get('/feed', (req, res, next) => {
@@ -231,7 +145,8 @@ router.get('/feed', (req, res, next) => {
     async.parallel({
       user: function(callback) {
         User.findById(req.user._id)
-        .populate('friends', 'posts')
+        .populate('friends')
+        .populate('posts')
         .exec(callback);
       },
       friends_list: function(callback) {
@@ -241,6 +156,9 @@ router.get('/feed', (req, res, next) => {
       }
     }, (err, results) => {
       if (err) { return next(err); }
+
+      // SORT POSTS BY DATE BEFORE SENDING TO VIEW
+      
       res.render('feed', { user: results.user, friends: results.friends_list });
     });
   } else {
@@ -258,14 +176,14 @@ router.get('/add-friend', (req, res, next) => {
 router.post('/search-friend', (req, res, next) => {
   // Username
   if (req.body.username) {
-    User.find({username: req.body.username}).exec((err, foundUsers) => {
+    User.find({username_lower: req.body.username.toLowerCase()}).exec((err, foundUsers) => {
       if (err) {return next(err); }
       res.render('add-friend-form', { foundUsers: foundUsers });
     });
 
   // First name and last name
   } else if (req.body.last_name && req.body.first_name) {
-    User.find({ last_name_lower: req.body.last_name, first_name_lower: req.body.first_name})
+    User.find({ last_name_lower: req.body.last_name.toLowerCase(), first_name_lower: req.body.first_name.toLowerCase()})
     .exec((err, foundUsers) => {
       if (err) {return next(err); }
       res.render('add-friend-form', { foundUsers: foundUsers });
@@ -273,7 +191,7 @@ router.post('/search-friend', (req, res, next) => {
   
   // Just last name
   } else if (req.body.last_name) {
-    User.find({ last_name_lower: req.body.last_name})
+    User.find({ last_name_lower: req.body.last_name.toLowerCase()})
     .exec((err, foundUsers) => {
       if (err) {return next(err); }
       res.render('add-friend-form', { foundUsers: foundUsers });
@@ -281,7 +199,7 @@ router.post('/search-friend', (req, res, next) => {
 
   // Just first name
   } else if (req.body.first_name) {
-    User.find({ first_name_lower: req.body.first_name})
+    User.find({ first_name_lower: req.body.first_name.toLowerCase()})
     .exec((err, foundUsers) => {
       if (err) {return next(err); }
       res.render('add-friend-form', { foundUsers: foundUsers });

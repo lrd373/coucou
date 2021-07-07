@@ -105,47 +105,6 @@ router.post('/sign-up', (req, res, next) => {
   });
 });
 
-// Home page Profile redirect
-router.get('/profile', profileController.homePageRedirect);
-
-// *************************** PROFILE  ********************************
-
-// GET default profile page
-router.get('/profile/:id', profileController.getProfilePage);
-
-// GET profile -- posts tab
-router.get('/profile/:id/posts', profileController.getProfilePosts);
-
-// GET profile -- friends tab
-router.get('/profile/:id/friends', profileController.getProfileFriends);
-
-// GET profile -- photos tab
-router.get('/profile/:id/photos', profileController.getProfilePhotos);
-
-// GET profile edit form
-router.get('/profile-bio-edit', profileController.getProfileBioEdit);
-
-// POST to profile edit form
-router.post('/profile-bio-edit', profileController.postToProfileBioEdit);
-
-// GET edit profile pic page
-router.get('/edit-profile-picture', profileController.getProfilePicEdit);
-
-// POST edit profile pic page
-router.post('/edit-profile-picture', profileController.postProfilePicEdit);
-
-// GET new post form
-router.get('/create-post', profileController.getNewPostForm);
-
-// POST -- create new post
-router.post('/create-post', profileController.postNewPostForm);
-
-// GET new profile media form
-router.get('/add-profile-media', profileController.getProfileMediaForm);
-
-// POST to new profile media form
-router.post('/add-profile-media', profileController.postProfileMediaForm);
-
 // *************************** FEED  ********************************
 
 // GET feed

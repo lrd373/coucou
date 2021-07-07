@@ -1,6 +1,7 @@
 :root {
   --macaw-pink: rgb(211, 50, 112);
   --teal: #77ffff;
+  --dark-teal: #1e4444;
 }
 
 body {
@@ -9,6 +10,7 @@ body {
 }
 
 a {
+  color: black;
   font-size: 1.25rem;
   text-decoration: none;
 }
@@ -159,7 +161,13 @@ nav > * {
     border-bottom: solid 2px var(--macaw-pink);
   }
 
-  /************ Profile Media ******************/
+  /************ Profile Friends Tab ******************/
+
+  .friendLink {
+    display: block;
+  }
+
+  /************ Profile Media Tab ******************/
   .profileMedia {
     display: block;
     margin: 0;

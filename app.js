@@ -21,6 +21,7 @@ const GridFsStorage = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
 
 const indexRouter = require('./routes/index');
+const profileRouter = require('./routes/profile');
 
 const User = require('./models/userSchema');
 
@@ -32,32 +33,6 @@ mongoose.connect(mongodb, {useNewUrlParser: true, useUnifiedTopology: true});
 
 // Get the default connection
 const db = mongoose.connection;
-
-// // Initiate variable for file stream with MongoDB Atlas
-// let gfs;
-// db.once('open', () => {
-//   gfs = Grid(db.db, mongoose.mongo);
-//   gfs.collection('Media');
-// });
-
-// // Create storage object
-// let storage = new GridFsStorage({
-//   url: mongodb,
-//   file: (req, file) => {
-//     return new Promise(
-//       (resolve, reject) => {
-//         const fileInfo = {
-//           filename: file.originalname,
-//           bucketName: "Media"
-//         }
-//         resolve(fileInfo);
-//       }
-//     );
-//   }
-// });
-
-// // Set the multer storage engine 
-// const upload = multer({ storage });
 
 // Bind connection to error event (to get notification of connection errors)
 db.on('error', console.error.bind(console, 'MongoDB connection error: '));
@@ -122,6 +97,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/', indexRouter);
+app.use('/profile/', profileRouter);
 
 
 // catch 404 and forward to error handler

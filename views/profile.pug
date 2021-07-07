@@ -38,6 +38,7 @@ block content
             - if (currentUser._id.toString() === user._id.toString())
               a(href="/profile-edit") Add a bio 
     
+
     .profileTabs
       .tabHeaders
         a(
@@ -52,6 +53,7 @@ block content
           class=(tab === "photos" ? "tabHeader clickedTab" : "tabHeader")
           href="/profile/" + user._id + "/photos"
           ) Photos
+
 
       if (tab === "photos")
         .profileMedia 
@@ -71,13 +73,34 @@ block content
           - if (currentUser._id.toString() === user._id.toString())
             a(href="/add-profile-media") Add some photos
 
-      if (tab === "friends")
+
+      if (tab === "friends" && !newFriendForm)
         .profileFriends
           - if (currentUser._id.toString() === user._id.toString())
-            a(href="/add-friend") Add a friend 
+            a(href="/profile/" + currentUser._id + "/friends/add-friend-form") Add a friend 
           if user.friends.length > 0
             each friend in user.friends 
-              a(href=friend.url) #{friend.fullname}
+              a.friendLink(href=friend.url) #{friend.fullname}
+      if (tab === "friends" && newFriendForm)
+        h1 Look up a friend 
+        h3= errorMsg
+        form(action="profile/" + currentUser._id + "friends/search-friend" method="POST")
+          label(for="first_name") First name 
+          input(name="first_name" placeholder="first name" type="text")
+          label(for="last_name") Last name 
+          input(name="last_name" placeholder="last name" type="text")
+          h3 OR
+          label(for="username") Email
+          input(name="username" placeholder="email" type="email")
+          button Submit
+
+        if foundUsers && foundUsers.length > 0
+          form(action="profile/" + currentUser._id + "friends/add-friend" method="POST")
+            each foundUser in foundUsers 
+              label(for=foundUser.username) #{foundUser.fullname}
+              input(name=foundUser.username value=foundUser._id type="checkbox") 
+            button Add friend  
+
 
       if (tab === "posts")
         .profilePosts

@@ -37,22 +37,6 @@ const mongodb = `mongodb+srv://admin-lauren:${process.env.MONGODB_PASSWORD}@clus
 // Get the default connection
 const db = mongoose.connection;
 
-// const storage = new GridFsStorage({
-//     url: mongodb,
-//     file: (req, file) => {
-//         return new Promise((resolve, reject) => {
-//             const filename = file.originalname; 
-//             const fileInfo = {
-//                 filename: filename,
-//                 bucketName: "uploads"
-//             };
-//             resolve(fileInfo);
-//         });
-//     }
-// });
-
-// const upload = multer({storage});
-
 // Home page Profile redirect
 exports.homePageRedirect = (req, res) => {
     if (req.user) {
@@ -65,7 +49,7 @@ exports.homePageRedirect = (req, res) => {
 // GET profile page
 exports.getProfilePage = (req, res, next) => {
     if (req.user) {
-        res.redirect('/profile/'+ req.user._id + "/posts");
+        res.redirect('/profile/'+ req.params.id + "/posts");
     } else {
         res.redirect('/');
     }
@@ -443,3 +427,127 @@ exports.postProfileMediaForm = (req, res, next) => {
         res.redirect('/');
     }
 }
+
+exports.profileAddFriendForm = (req, res, next) => {
+    if (req.user) {
+        async.parallel({
+            user: function(callback) {
+                User.findById(req.params.id)
+                .exec(callback);
+            },
+            
+            profile: function(callback) {
+                Profile.findOne({'user': req.params.id})
+                .populate('profilePic')
+                .exec(callback);
+            }
+            // FIND IMAGE DATA STORED IN MEDIA CHUNK AS DATA BINARY 
+        }, (err, results) => {
+            if (err) { return next(err); }
+            
+            res.render('profile', { currentUser: req.user, user: results.user, profile: results.profile, tab: "friends", newFriendForm: true });
+        });
+    } else {
+        res.redirect('/');
+    }
+}
+
+exports.profileSearchFriend =  (req, res, next) => {
+    // Username
+    if (req.body.username) {
+      User.find({username_lower: req.body.username.toLowerCase()}).exec((err, foundUsers) => {
+        if (err) {return next(err); }
+        res.render('add-friend-form', { foundUsers: foundUsers });
+      });
+  
+    // First name and last name
+    } else if (req.body.last_name && req.body.first_name) {
+      User.find({ last_name_lower: req.body.last_name.toLowerCase(), first_name_lower: req.body.first_name.toLowerCase()})
+      .exec((err, foundUsers) => {
+        if (err) {return next(err); }
+        res.render('add-friend-form', { foundUsers: foundUsers });
+      });
+    
+    // Just last name
+    } else if (req.body.last_name) {
+      User.find({ last_name_lower: req.body.last_name.toLowerCase()})
+      .exec((err, foundUsers) => {
+        if (err) {return next(err); }
+        res.render('add-friend-form', { foundUsers: foundUsers });
+      });
+  
+    // Just first name
+    } else if (req.body.first_name) {
+      User.find({ first_name_lower: req.body.first_name.toLowerCase()})
+      .exec((err, foundUsers) => {
+        if (err) {return next(err); }
+        res.render('add-friend-form', { foundUsers: foundUsers });
+      });
+  
+    // No search criteria were entered
+    } else {
+      res.render('add-friend-form', {errorMsg: 'Please fill in at least one field'});
+    }
+  }
+
+exports.profileAddFriend = (req, res, next) => {
+    if (req.user) {
+      
+      for (let foundUser in req.body) {
+  
+        // add current logged in user to userData friends list
+        async.waterfall([
+          function(callback) {
+            User.findById(req.body[foundUser]).exec((err, userData) => {
+              if (err) { return next(err); }
+              callback(null, userData);
+            });
+          }, 
+          function(userData, callback) {
+            let foundUserFriends = userData.friends;
+            foundUserFriends.push(req.user._id);
+            const updatedFoundUser = new User({
+              first_name: userData.first_name,
+              first_name_lower: userData.first_name_lower,
+              last_name: userData.last_name,
+              last_name_lower: userData.last_name_lower,
+              username: userData.username,
+              password: userData.password,
+              posts: userData.posts,
+              friends: foundUserFriends,
+              reactions: userData.reactions,
+              _id: userData._id
+            });
+            User.findByIdAndUpdate(userData._id, updatedFoundUser, function(err, foundUser) {
+              if (err) { return next(err); }
+            });
+          }
+        ], function(err) {
+          if (err) {return next(err);}
+        });
+  
+  
+        // add userData to current logged in user's friends list
+        let currentFriendsList = req.user.friends;
+        currentFriendsList.push(req.body[foundUser]);
+        const updatedUser = new User({
+          first_name: req.user.first_name,
+          first_name_lower: req.user.first_name_lower,
+          last_name: req.user.last_name,
+          last_name_lower: req.user.last_name_lower,
+          username: req.user.username,
+          password: req.user.password,
+          posts: req.user.posts,
+          friends: currentFriendsList,
+          reactions: req.user.reactions,
+          _id: req.user._id
+        });
+        User.findByIdAndUpdate(req.user._id, updatedUser, function(err, theUser) {
+          if (err) { return next(err); }
+          res.redirect('/profile/'+theUser._id);
+        });
+      }
+    } else {
+      res.redirect('/');
+    }
+  }

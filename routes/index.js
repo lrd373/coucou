@@ -110,8 +110,17 @@ router.get('/profile', profileController.homePageRedirect);
 
 // *************************** PROFILE  ********************************
 
-// GET profile page
+// GET default profile page
 router.get('/profile/:id', profileController.getProfilePage);
+
+// GET profile -- posts tab
+router.get('/profile/:id/posts', profileController.getProfilePosts);
+
+// GET profile -- friends tab
+router.get('/profile/:id/friends', profileController.getProfileFriends);
+
+// GET profile -- photos tab
+router.get('/profile/:id/photos', profileController.getProfilePhotos);
 
 // GET profile edit form
 router.get('/profile-bio-edit', profileController.getProfileBioEdit);

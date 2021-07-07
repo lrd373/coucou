@@ -38,45 +38,60 @@ block content
             - if (currentUser._id.toString() === user._id.toString())
               a(href="/profile-edit") Add a bio 
     
-    .profileMedia 
-      h2.profileSectionHeader Photos
-      if newMediaForm 
-        .modalContainer
-          form(class="modalContent" action="/add-profile-media" method="POST" enctype="multipart/form-data") 
-            label(for="profilePic") Upload your picture
-            input(type="file" name="profileMedia" accept="image/png, image/jpeg" required)
-            button Submit
-            a(class="editCancelBtn" href="/profile") Cancel
-      if profile.media 
-        each img in profile.media 
-          img(
-          class="profileMediaPic"
-          src=`data:${img.img.contentType};base64,${Buffer.from(img.img.data).toString("base64")}`, 
-          alt=img.altText)
-      - if (currentUser._id.toString() === user._id.toString())
-        a(href="/add-profile-media") Add some photos
+    .profileTabs
+      .tabHeaders
+        a(
+          class=(tab === "posts" ? "tabHeader clickedTab" : "tabHeader") 
+          href="/profile/" + user._id + "/posts"
+          ) Posts
+        a(
+          class=(tab === "friends" ? "tabHeader clickedTab" : "tabHeader")
+          href="/profile/" + user._id + "/friends"
+          ) Friends
+        a(
+          class=(tab === "photos" ? "tabHeader clickedTab" : "tabHeader")
+          href="/profile/" + user._id + "/photos"
+          ) Photos
 
-    .profileFriends 
-      h2.profileSectionHeader Friends
-      - if (currentUser._id.toString() === user._id.toString())
-        a(href="/add-friend") Add a friend 
-      if user.friends.length > 0
-        each friend in user.friends 
-          a(href=friend.url) #{friend.fullname}
+      if (tab === "photos")
+        .profileMedia 
+          if newMediaForm 
+            .modalContainer
+              form(class="modalContent" action="/add-profile-media" method="POST" enctype="multipart/form-data") 
+                label(for="profilePic") Upload your picture
+                input(type="file" name="profileMedia" accept="image/png, image/jpeg" required)
+                button Submit
+                a(class="editCancelBtn" href="/profile") Cancel
+          if profile.media 
+            each img in profile.media 
+              img(
+              class="profileMediaPic"
+              src=`data:${img.img.contentType};base64,${Buffer.from(img.img.data).toString("base64")}`, 
+              alt=img.altText)
+          - if (currentUser._id.toString() === user._id.toString())
+            a(href="/add-profile-media") Add some photos
 
-    .profilePosts 
-      h2.profileSectionHeader Posts
-      - if (currentUser._id.toString() === user._id.toString()) 
-        a(href="/create-post") Create new post
-      if user.posts.length > 0
-        each post in user.posts
-          .postCard 
-            p.postText= post.text
-            p.postDate Last Updated: #{post.date_last_updated_local}
-      if newPostForm 
-        a(href=profile.url) X 
-        form(action="/create-post" method="POST")
-          label(for="text") Your Message 
-          textarea(name="text", cols="30", rows="10")
-            //-  Media to come
-          button Submit
+      if (tab === "friends")
+        .profileFriends
+          - if (currentUser._id.toString() === user._id.toString())
+            a(href="/add-friend") Add a friend 
+          if user.friends.length > 0
+            each friend in user.friends 
+              a(href=friend.url) #{friend.fullname}
+
+      if (tab === "posts")
+        .profilePosts
+          - if (currentUser._id.toString() === user._id.toString()) 
+            a(href="/create-post") Create new post
+          if user.posts.length > 0
+            each post in user.posts
+              .postCard 
+                p.postText= post.text
+                p.postDate Last Updated: #{post.date_last_updated_local}
+          if newPostForm 
+            a(href=profile.url) X 
+            form(action="/create-post" method="POST")
+              label(for="text") Your Message 
+              textarea(name="text", cols="30", rows="10")
+                //-  Media to come
+              button Submit

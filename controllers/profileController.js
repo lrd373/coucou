@@ -65,11 +65,70 @@ exports.homePageRedirect = (req, res) => {
 // GET profile page
 exports.getProfilePage = (req, res, next) => {
     if (req.user) {
+        res.redirect('/profile/'+ req.user._id + "/posts");
+    } else {
+        res.redirect('/');
+    }
+};
+
+// GET profile -- posts tab
+exports.getProfilePosts = (req, res, next) => {
+    if (req.user) {
+        async.parallel({
+            user: function(callback) {
+                User.findById(req.params.id)
+                .populate('posts')
+                .exec(callback);
+            },
+            
+            profile: function(callback) {
+                Profile.findOne({'user': req.params.id})
+                .populate('profilePic')
+                .exec(callback);
+            }
+            // FIND IMAGE DATA STORED IN MEDIA CHUNK AS DATA BINARY 
+        }, (err, results) => {
+            if (err) { return next(err); }
+            
+            res.render('profile', { currentUser: req.user, user: results.user, profile: results.profile, tab: "posts" });
+        });
+    } else {
+        res.redirect('/');
+    }
+};
+
+// GET profile -- friends tab
+exports.getProfileFriends = (req, res, next) => {
+    if (req.user) {
         async.parallel({
             user: function(callback) {
                 User.findById(req.params.id)
                 .populate('friends')
-                .populate('posts')
+                .exec(callback);
+            },
+            
+            profile: function(callback) {
+                Profile.findOne({'user': req.params.id})
+                .populate('profilePic')
+                .exec(callback);
+            }
+            // FIND IMAGE DATA STORED IN MEDIA CHUNK AS DATA BINARY 
+        }, (err, results) => {
+            if (err) { return next(err); }
+            
+            res.render('profile', { currentUser: req.user, user: results.user, profile: results.profile, tab: "friends" });
+        });
+    } else {
+        res.redirect('/');
+    }
+};
+
+// GET profile -- photos tab
+exports.getProfilePhotos = (req, res, next) => {
+    if (req.user) {
+        async.parallel({
+            user: function(callback) {
+                User.findById(req.params.id)
                 .exec(callback);
             },
             
@@ -83,7 +142,7 @@ exports.getProfilePage = (req, res, next) => {
         }, (err, results) => {
             if (err) { return next(err); }
             
-            res.render('profile', { currentUser: req.user, user: results.user, profile: results.profile });
+            res.render('profile', { currentUser: req.user, user: results.user, profile: results.profile, tab: "photos" });
         });
     } else {
         res.redirect('/');

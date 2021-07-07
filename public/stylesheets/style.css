@@ -117,10 +117,6 @@ nav > * {
   width: 100%;
 }
 
-.profileSectionHeader {
-  margin: 0;
-}
-
   /************ Profile Header *******************/
 
   .profileHeader {
@@ -145,6 +141,22 @@ nav > * {
 
   .profileBioContainer {
     display: flex;
+  }
+
+  /************ Profile Tab Headers ******************/
+  .tabHeaders {
+    background-color: var(--teal);
+    padding: 0.5rem 0;
+  }
+
+  .tabHeader {
+    margin: 0 0.5rem;
+    font-weight: bold;
+  }
+
+  .clickedTab {
+    color: var(--macaw-pink);
+    border-bottom: solid 2px var(--macaw-pink);
   }
 
   /************ Profile Media ******************/

@@ -216,6 +216,7 @@ exports.postProfilePicEdit = [
             }
         });
 
+        // delete photo from serverside uploads folder
         fs.unlinkSync(req.files[0].path);
 
         async.waterfall([
@@ -228,17 +229,26 @@ exports.postProfilePicEdit = [
                 });
             },
 
-            function(profilePic, callback) {  // find current profile obj in Mongo DB
-                let picId = profilePic._id;
+            function(newProfilePic, callback) {  // find current profile obj in Mongo DB
+                let newPicId = newProfilePic._id;
                 Profile.findOne({'user': req.user._id}).exec((err, foundProfile) => {
-                    callback(null, foundProfile, picId);
+                    callback(null, foundProfile, newPicId);
                 });
             },
 
-            function(currentProfile, picId, callback) {
+            function(currentProfile, newPicId, callback) { // remove previous profile pic from MongoDB
+                let oldProfilePicId = currentProfile.profilePic;
+
+                Media.findByIdAndRemove(oldProfilePicId, err => {
+                    if (err) { return next(err); }
+                    callback(null, currentProfile, newPicId);
+                });
+            },
+
+            function(currentProfile, newPicId, callback) {
                 let updatedProfile = new Profile ({ // save profile with ref to new profile pic obj id
                     user: currentProfile.user,
-                    profilePic: picId,
+                    profilePic: newPicId,
                     bio: currentProfile.bio,
                     media: currentProfile.media,
                     _id: currentProfile._id
@@ -257,7 +267,7 @@ exports.postProfilePicEdit = [
             res.redirect('/profile/'+req.user._id + "/posts");
         });
     
-    // Any other security risks??
+    // Security risks
     // sanitize file name (npm sanitize-filename)
 }];
 
@@ -361,6 +371,9 @@ exports.postProfileMediaForm = (req, res, next) => {
                             }
                         });
 
+                        // delete file from uploads folder
+                        fs.unlinkSync(req.files[i].path);
+
                         promises.push(newPic.save());
                     }
                     return Promise.all(promises);  
@@ -401,7 +414,7 @@ exports.postProfileMediaForm = (req, res, next) => {
             },
 
             function(updatedProfile, callback) {
-                // delete file from uploads folder
+                
                 callback(null, updatedProfile);
             }
         ], (err, updatedProfile) => {

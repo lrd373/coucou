@@ -1,6 +1,7 @@
 extends layout 
 
 block content 
+  a(href="/profile") Back
   h1 Look up a friend 
   h3= errorMsg
   form(action="/search-friend" method="POST")

@@ -1,15 +1,14 @@
 extends layout 
 
 block content 
-  h1 Edit Your Profile
+  a(href="/profile") Back
+  h1 Edit Your Bio
   form(action="" method="POST")  
     label(for="bio") Bio 
-    textarea(name="bio", cols="30", rows="10") 
+    textarea(name="bio", cols="80", rows="10") 
       if profile 
         | #{profile.bio}
-    label(for="media") Add Photos or Videos 
     button Submit
-    //- do something
       
 
 

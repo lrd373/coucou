@@ -58,10 +58,10 @@ router.post('/:id/friends/add-friend', profileController.profileAddFriend);
 router.get('/:id/photos', profileController.getProfilePhotos);
 
 // GET profile edit form
-router.get('/profile-bio-edit', profileController.getProfileBioEdit);
+router.get('/:id/edit-profile-bio', profileController.getProfileBioEdit);
 
 // POST to profile edit form
-router.post('/profile-bio-edit', profileController.postToProfileBioEdit);
+router.post('/:id/edit-profile-bio', profileController.postToProfileBioEdit);
 
 // GET edit profile pic page
 router.get('/:id/edit-profile-picture', profileController.getProfilePicEdit);

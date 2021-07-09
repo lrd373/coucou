@@ -33,11 +33,11 @@ block content
           if profile.bio 
             p= profile.bio
             - if (currentUser._id.toString() === user._id.toString())
-              a(class="editProfileBio" href="/profile-bio-edit")
+              a(class="editProfileBio" href="/profile/" + currentUser._id + '/edit-profile-bio')
                 img(class="editIcon" src="/images/edit.png", alt="Edit profile bio")
           else
             - if (currentUser._id.toString() === user._id.toString())
-              a(href="/profile-edit") Add a bio 
+              a(href="/profile/" + currentUser._id + '/edit-profile-bio') Add a bio 
     
     //----------- PROFILE TAB CONTENT -------------
     .profileTabs

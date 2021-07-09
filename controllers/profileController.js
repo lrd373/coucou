@@ -131,11 +131,9 @@ exports.getProfilePhotos = (req, res, next) => {
 exports.getProfileBioEdit = (req, res) => {
     if (req.user) {
         Profile.findOne({'user': req.user._id})
-        .populate('profilePic')
-        .populate('media')
         .exec((err, profile) => {
             if (err) { return next(err); }
-            res.render('profile-form', { profile: profile });
+            res.render('edit-bio-form', { profile: profile });
         }); 
     } else {
         res.redirect('/');

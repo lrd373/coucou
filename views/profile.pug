@@ -6,6 +6,7 @@ block content
     //----------- PROFILE HEADER -------------
     .profileHeader 
       
+      //- Upload profile pic form
       if newProfilePic 
           .modalContainer
             form(class="modalContent" action="/profile/" + currentUser._id + "/edit-profile-picture" method="POST" enctype="multipart/form-data")
@@ -22,7 +23,7 @@ block content
             src=`data:${profile.profilePic.img.contentType};base64,${Buffer.from(profile.profilePic.img.data).toString("base64")}`, 
             alt=profile.profilePic.altText)
           - if (currentUser._id.toString() === user._id.toString())
-            a(class="editProfilePic" href="/profile/" + currentUser._id + "/edit-profile-picture")
+            a(class="editProfilePic editLink" href="/profile/" + currentUser._id + "/edit-profile-picture")
               img(class="editIcon" src="/images/edit.png", alt="Edit profile picture")
         else if (currentUser._id.toString() === user._id.toString())
             a(class="editProfilePic" href="/profile/" + currentUser._id + "/edit-profile-picture") Add a profile picture
@@ -57,7 +58,7 @@ block content
 
       //----------- Photos Tab -------------
       if (tab === "photos")
-        .profileMedia 
+        .profileMedia.tabContent 
           if newMediaForm 
             .modalContainer
               form(class="modalContent" action="/profile/" + currentUser._id +"/add-profile-media" method="POST" enctype="multipart/form-data") 
@@ -76,7 +77,7 @@ block content
 
       //----------- Friends Tab -------------
       if (tab === "friends" && !newFriendForm)
-        .profileFriends
+        .profileFriends.tabContent
           - if (currentUser._id.toString() === user._id.toString())
             a(href="/profile/" + currentUser._id + "/friends/add-friend-form") Add a friend 
           if user.friends.length > 0
@@ -105,7 +106,7 @@ block content
 
       //----------- Posts Tab -------------
       if (tab === "posts")
-        .profilePosts
+        .profilePosts.tabContent
           - if (currentUser._id.toString() === user._id.toString()) 
             a(href="/create-post") Create new post
           if user.posts.length > 0

@@ -8,7 +8,7 @@ html
 
     //- Google Fonts
     link(rel="preconnect" href="https://fonts.gstatic.com")
-    link(href="https://fonts.googleapis.com/css2?family=KoHo:wght@200&family=Pattaya&display=swap" rel="stylesheet")
+    link(href="https://fonts.googleapis.com/css2?family=KoHo:wght@200;400;500;600;700;800&family=Pattaya:wght@200;400;500;600;700;800&display=swap" rel="stylesheet")
 
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
@@ -17,9 +17,9 @@ html
         img(id="coucou-macaw" src="/images/macaw.png", alt="Coucou logo")
         h1.logo Coucou
       nav 
-        a(href="/profile") Profile 
-        a(href="/feed") Feed
-        a(href="/log-out") Log Out  
+        a.navLink(href="/profile") Profile 
+        a.navLink(href="/feed") Feed
+        a.navLink(href="/log-out") Log Out  
     block content
     
     .flaticon

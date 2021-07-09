@@ -1,6 +1,7 @@
 :root {
   --macaw-pink: rgb(211, 50, 112);
   --teal: #77ffff;
+  --light-teal: #92fcfcab;
   --dark-teal: #1e4444;
 }
 
@@ -12,6 +13,7 @@ body {
 a {
   color: black;
   font-size: 1.25rem;
+  font-weight: 500;
   text-decoration: none;
 }
 
@@ -39,6 +41,7 @@ form > * {
 .editIcon {
   width: 15px;
   height: 15px;
+  opacity: 0;
 }
 
 .wavy-border {
@@ -72,8 +75,8 @@ header {
   background-color: var(--teal);
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 10px 10px 0;
+  align-items: baseline;
+  padding: 10px 10px 5px;
   position: relative;
   z-index: 10;
 }
@@ -102,14 +105,18 @@ header {
 nav {
   display: flex;
   justify-content: space-between;
-  gap: 10px;
+  gap: 1rem;
   margin: 0 10px;
 }
 
 nav > * {
   color: var(--macaw-pink);
   font-size: 1.25rem;
-  font-weight: bold;
+}
+
+.navLink {
+  position: relative;
+  bottom: 0.25rem;
 }
 
 /********************** Profile **********************/
@@ -122,15 +129,16 @@ nav > * {
   /************ Profile Header *******************/
 
   .profileHeader {
-    background-color: var(--teal);
+    background-color: var(--light-teal);
     display: flex;
     justify-content: flex-start;
     margin: 0;
-    padding: 2rem 2rem 0;
+    padding: 2rem 2rem 1rem;
   }
 
   .userFullName {
     font-size: 3.5rem;
+    font-weight: 500;
     margin: 0;
   }
 
@@ -141,24 +149,42 @@ nav > * {
     height: auto;
   }
 
+  .profilePic:hover + a>img {
+    opacity: 1;
+  }
+
+  .editProfilePic {
+    position: relative;
+    right: 4rem;
+    bottom: 10rem;
+    z-index: 99;
+  }
+  
+  .editProfilePic:hover {
+    opacity: 1;
+  }
+
   .profileBioContainer {
     display: flex;
   }
 
   /************ Profile Tab Headers ******************/
   .tabHeaders {
-    background-color: var(--teal);
-    padding: 0.5rem 0;
+    background-color: var(--light-teal);
+    padding: 0.5rem 2rem;
   }
 
   .tabHeader {
     margin: 0 0.5rem;
-    font-weight: bold;
   }
 
   .clickedTab {
     color: var(--macaw-pink);
     border-bottom: solid 2px var(--macaw-pink);
+  }
+
+  .tabContent {
+    padding: 0.5rem 2rem;
   }
 
   /************ Profile Friends Tab ******************/

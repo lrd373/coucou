@@ -348,7 +348,7 @@ exports.getProfileMediaForm = (req, res, next) => {
         }, (err, results) => {
             if (err) { return next(err); }
             
-            res.render('profile', { newMediaForm: true, currentUser: req.user, user: results.user, profile: results.profile });
+            res.render('profile', { newMediaForm: true, currentUser: req.user, user: results.user, profile: results.profile, tab: "photos" });
         });
     } else {
         res.redirect('/');
@@ -421,7 +421,7 @@ exports.postProfileMediaForm = (req, res, next) => {
             if (err) { return next(err); }
 
             // reload profile page
-            res.redirect('/profile/'+req.user._id);
+            res.redirect('/profile/'+req.user._id + '/photos');
         });
         
     } else {

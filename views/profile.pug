@@ -60,7 +60,7 @@ block content
         .profileMedia 
           if newMediaForm 
             .modalContainer
-              form(class="modalContent" action="/add-profile-media" method="POST" enctype="multipart/form-data") 
+              form(class="modalContent" action="/profile/" + currentUser._id +"/add-profile-media" method="POST" enctype="multipart/form-data") 
                 label(for="profilePic") Upload your picture
                 input(type="file" name="profileMedia" accept="image/png, image/jpeg" required)
                 button Submit
@@ -72,7 +72,7 @@ block content
               src=`data:${img.img.contentType};base64,${Buffer.from(img.img.data).toString("base64")}`, 
               alt=img.altText)
           - if (currentUser._id.toString() === user._id.toString())
-            a(href="/add-profile-media") Add some photos
+            a(href="/profile/" + currentUser._id +"/add-profile-media") Add some photos
 
       //----------- Friends Tab -------------
       if (tab === "friends" && !newFriendForm)

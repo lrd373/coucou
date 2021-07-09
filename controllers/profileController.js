@@ -6,12 +6,6 @@ const mongoose = require('mongoose');
 
 // Image upload packages
 const fs = require('fs');
-const formidable =  require('formidable');
-const crypto = require('crypto'); // to generate file name
-const multer = require('multer');
-const GridFsStorage = require('multer-gridfs-storage');
-const Grid = require('gridfs-stream');
-const app = require('../app');
 
 // Validation, sanitization, and encryption middleware
 const bcrypt = require('bcryptjs');
@@ -218,9 +212,11 @@ exports.postProfilePicEdit = [
             altText: "Profile Picture",
             img: {
                 data: fs.readFileSync(req.files[0].path),
-                contentType: 'image/png'
+                contentType: req.files[0].mimetype
             }
         });
+
+        fs.unlinkSync(req.files[0].path);
 
         async.waterfall([
 
@@ -240,7 +236,7 @@ exports.postProfilePicEdit = [
             },
 
             function(currentProfile, picId, callback) {
-                let updatedProfile = new Profile ({
+                let updatedProfile = new Profile ({ // save profile with ref to new profile pic obj id
                     user: currentProfile.user,
                     profilePic: picId,
                     bio: currentProfile.bio,
@@ -252,17 +248,13 @@ exports.postProfilePicEdit = [
                     if (err) { return next(err); }
                     callback(null, newProfile);
                 });
-            },
-
-            function(updatedProfile, callback) {
-                // delete file from uploads folder
-                callback(null, updatedProfile);
             }
-        ], (err, updatedProfile) => {
+
+        ], (err, newProfile) => {
             if (err) { return next(err); }
 
             // reload profile page
-            res.redirect('/profile/'+req.user._id);
+            res.redirect('/profile/'+req.user._id + "/posts");
         });
     
     // Any other security risks??

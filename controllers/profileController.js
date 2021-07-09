@@ -193,14 +193,12 @@ exports.getProfilePicEdit = (req, res, next) => {
         async.parallel({
             user: function(callback) {
                 User.findById(req.user._id)
-                .populate('friends')
                 .populate('posts')
                 .exec(callback);
             },
             profile: function(callback) {
                 Profile.findOne({'user': req.user._id})
                 .populate('profilePic')
-                .populate('media')
                 .exec(callback);
             }
         }, (err, results) => {
@@ -360,7 +358,6 @@ exports.postProfileMediaForm = (req, res, next) => {
 
         async.waterfall([
             function(callback) {
-                
                 function createNewPicFiles () {
                     let promises = [];
                     for (let i=0; i < req.files.length; i++) {
@@ -374,7 +371,6 @@ exports.postProfileMediaForm = (req, res, next) => {
 
                         promises.push(newPic.save());
                     }
-
                     return Promise.all(promises);  
                 }
                 
@@ -430,23 +426,7 @@ exports.postProfileMediaForm = (req, res, next) => {
 
 exports.profileAddFriendForm = (req, res, next) => {
     if (req.user) {
-        async.parallel({
-            user: function(callback) {
-                User.findById(req.params.id)
-                .exec(callback);
-            },
-            
-            profile: function(callback) {
-                Profile.findOne({'user': req.params.id})
-                .populate('profilePic')
-                .exec(callback);
-            }
-            // FIND IMAGE DATA STORED IN MEDIA CHUNK AS DATA BINARY 
-        }, (err, results) => {
-            if (err) { return next(err); }
-            
-            res.render('profile', { currentUser: req.user, user: results.user, profile: results.profile, tab: "friends", newFriendForm: true });
-        });
+        res.render('add-friend-form');
     } else {
         res.redirect('/');
     }
@@ -494,15 +474,16 @@ exports.profileAddFriend = (req, res, next) => {
     if (req.user) {
       
       for (let foundUser in req.body) {
-  
         // add current logged in user to userData friends list
         async.waterfall([
+
           function(callback) {
             User.findById(req.body[foundUser]).exec((err, userData) => {
               if (err) { return next(err); }
               callback(null, userData);
             });
           }, 
+
           function(userData, callback) {
             let foundUserFriends = userData.friends;
             foundUserFriends.push(req.user._id);
@@ -526,7 +507,6 @@ exports.profileAddFriend = (req, res, next) => {
           if (err) {return next(err);}
         });
   
-  
         // add userData to current logged in user's friends list
         let currentFriendsList = req.user.friends;
         currentFriendsList.push(req.body[foundUser]);
@@ -544,7 +524,7 @@ exports.profileAddFriend = (req, res, next) => {
         });
         User.findByIdAndUpdate(req.user._id, updatedUser, function(err, theUser) {
           if (err) { return next(err); }
-          res.redirect('/profile/'+theUser._id);
+          res.redirect('/profile/'+ theUser._id + "/friends/");
         });
       }
     } else {

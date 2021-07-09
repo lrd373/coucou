@@ -64,21 +64,21 @@ router.get('/profile-bio-edit', profileController.getProfileBioEdit);
 router.post('/profile-bio-edit', profileController.postToProfileBioEdit);
 
 // GET edit profile pic page
-router.get('/edit-profile-picture', profileController.getProfilePicEdit);
+router.get('/:id/edit-profile-picture', profileController.getProfilePicEdit);
 
 // POST edit profile pic page
-router.post('/edit-profile-picture', profileController.postProfilePicEdit);
+router.post('/:id/edit-profile-picture', profileController.postProfilePicEdit);
 
 // GET new post form
-router.get('/create-post', profileController.getNewPostForm);
+router.get('/:id/create-post', profileController.getNewPostForm);
 
 // POST -- create new post
-router.post('/create-post', profileController.postNewPostForm);
+router.post('/:id/create-post', profileController.postNewPostForm);
 
 // GET new profile media form
-router.get('/add-profile-media', profileController.getProfileMediaForm);
+router.get('/:id/add-profile-media', profileController.getProfileMediaForm);
 
 // POST to new profile media form
-router.post('/add-profile-media', profileController.postProfileMediaForm);
+router.post('/:id/add-profile-media', profileController.postProfileMediaForm);
 
 module.exports = router;

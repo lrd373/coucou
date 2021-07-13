@@ -107,13 +107,6 @@ block content
       //----------- Posts Tab -------------
       if (tab === "posts")
         .profilePosts.tabContent
-          - if (currentUser._id.toString() === user._id.toString()) 
-            a(href="/profile/" + currentUser._id + "/create-post") Create new post
-          if user.posts.length > 0
-            each post in user.posts
-              .postCard 
-                p.postText= post.text
-                p.postDate Last Updated: #{post.date_last_updated_local}
           if newPostForm 
             a(href=profile.url) X 
             form(action="/profile/" + currentUser._id + "/create-post" method="POST")
@@ -121,3 +114,10 @@ block content
               textarea(name="text", cols="30", rows="10")
                 //-  Media to come
               button Submit
+          - if (currentUser._id.toString() === user._id.toString()) 
+            a(href="/profile/" + currentUser._id + "/create-post") Create new post
+          if user.posts.length > 0
+            each post in user.posts
+              .postCard 
+                p.postText= post.text
+                p.postDate Last Updated: #{post.date_last_updated_local}

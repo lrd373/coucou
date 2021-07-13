@@ -108,7 +108,7 @@ block content
       if (tab === "posts")
         .profilePosts.tabContent
           - if (currentUser._id.toString() === user._id.toString()) 
-            a(href="/create-post") Create new post
+            a(href="/profile/" + currentUser._id + "/create-post") Create new post
           if user.posts.length > 0
             each post in user.posts
               .postCard 
@@ -116,7 +116,7 @@ block content
                 p.postDate Last Updated: #{post.date_last_updated_local}
           if newPostForm 
             a(href=profile.url) X 
-            form(action="/create-post" method="POST")
+            form(action="/profile/" + currentUser._id + "/create-post" method="POST")
               label(for="text") Your Message 
               textarea(name="text", cols="30", rows="10")
                 //-  Media to come

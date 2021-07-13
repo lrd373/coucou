@@ -276,19 +276,17 @@ exports.getNewPostForm = (req, res, next) => {
         async.parallel({
             user: function(callback) {
                 User.findById(req.user._id)
-                .populate('friends')
                 .populate('posts')
                 .exec(callback);
             },
             profile: function(callback) {
                 Profile.findOne({'user': req.user._id})
                 .populate('profilePic')
-                .populate('media')
                 .exec(callback);
             }
         }, (err, results) => {
             if (err) { return next(err); }
-            res.render('profile', {newPostForm: true, user: results.user, profile: results.profile});
+            res.render('profile', {newPostForm: true, user: results.user, profile: results.profile, tab: 'posts'});
         });
     } else {
         res.redirect('/');

@@ -41,7 +41,6 @@ form > * {
 .editIcon {
   width: 15px;
   height: 15px;
-  opacity: 0;
 }
 
 .wavy-border {
@@ -147,21 +146,6 @@ nav > * {
     border-radius: 50%;
     width: 200px;
     height: auto;
-  }
-
-  .profilePic:hover + a>img {
-    opacity: 1;
-  }
-
-  .editProfilePic {
-    position: relative;
-    right: 4rem;
-    bottom: 10rem;
-    z-index: 99;
-  }
-  
-  .editProfilePic:hover {
-    opacity: 1;
   }
 
   .profileBioContainer {

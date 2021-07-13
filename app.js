@@ -2,9 +2,12 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20');
+const cookieSession = require('cookie-session');
 const LocalStrategy = require('passport-local').Strategy;
 const createError = require('http-errors');
 const path = require('path');
+const async = require('async');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const fs = require('fs');
@@ -24,6 +27,7 @@ const indexRouter = require('./routes/index');
 const profileRouter = require('./routes/profile');
 
 const User = require('./models/userSchema');
+const Profile = require('./models/profileSchema');
 
 const app = express();
 
@@ -41,6 +45,11 @@ db.on('error', console.error.bind(console, 'MongoDB connection error: '));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+// Cookie Session configuration
+app.use(cookieSession({
+  maxAge: 24*60*60*1000, // One day in ms
+  keys: ['a;selifjsia;seifjaij3f29309fh']
+}));
 
 app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
@@ -59,7 +68,7 @@ app.use(multer({
 
 
 
-// Configure passport authentication local strategy
+// Configure LOCAL passport authentication strategy
 passport.use(
   new LocalStrategy((username, password, done) => {
     User.findOne({ username: username }, (err, user) => {
@@ -80,11 +89,75 @@ passport.use(
   })
 );
 
+// Configure GOOGLE passport authentication strategy
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: '/auth/google/login'
+}, 
+(accessToken, refreshToken, profile, done) => {
+   // done(null, user); // passes the profile data to serializeUser
+   User.findOne({ oauthClient: 'google', username: profile.emails[0].value }, (err, user) => {
+    if (err) { return done(err); }
+    if (!user) { 
+      console.log("Google user doesn't exist, creating now...");
+      // create user
+      bcrypt.hash(profile.id, 10, (err, hashedID) => {
+        if (err) { return done(err); }
+
+        async.waterfall([
+          function(callback) {
+            new User({
+              first_name: profile.name.givenName,
+              first_name_lower: profile.name.givenName.toLowerCase(),
+              last_name: profile.name.familyName,
+              last_name_lower: profile.name.familyName.toLowerCase(),
+              username: profile.emails[0].value,
+              username_lower: profile.emails[0].value.toLowerCase(),
+              password: hashedID,
+              oauthClient: 'google',
+            }).save().then(newUser => callback(null, newUser));
+          },
+
+          function(newUser, callback) {
+            const profile = new Profile ({
+              user: newUser._id,
+            });
+            profile.save(err => {
+              if (err) { return next(err); }
+              callback(null, {newUser, profile});
+            });
+          }
+        ], (err, results) => {
+          if (err) { return done(err); }
+          
+          return done(null, results.newUser);
+        });
+        
+      });
+    } else {
+      console.log("Google user exists, logging them in now...");
+      bcrypt.compare(profile.id, user.password, (err, res) => {
+        if (res) {
+          // passwords match, log user in
+          return done(null, user);
+        } else {
+          // passwords don't match
+          return done(null, false, { message: 'ID cannot be authenticated' });
+        }
+      });
+    }
+  });
+  
+}));
+
+
 // Functions to keep user logged in
 passport.serializeUser(function (user, done) {
   done(null, user._id);
 });
 
+// Used to decode the received cookie and persist session
 passport.deserializeUser(function (id, done) {
   User.findById(id, function(err, user) {
     done(err, user);

@@ -39,6 +39,33 @@ router.get('/', function(req, res, next) {
   }
 });
 
+// GET Google OAuth login
+router.get('/auth/google', passport.authenticate('google', {
+  scope: ['profile', 'email'] // Used to specify the data required by Google
+}));
+
+// The middleware receives the data from Google and runs the function on Strategy config
+router.get('/auth/google/login', passport.authenticate('google'), (req, res, next) => {
+  if (req.user) {
+    next();
+  } else {
+    res.send("You must login");
+  }
+}, (req, res) => {
+  res.redirect('/profile/' + req.user._id);
+});
+
+// Secret route
+router.get('/secret', (req, res, next) => {
+  if (req.user) {
+    next();
+  } else {
+    res.send("You must login");
+  }
+}, (req, res) => {
+  res.redirect('/profile/' + req.user._id);
+});
+
 // POST to login form
 router.post('/log-in', 
   passport.authenticate('local', { failureRedirect: '/'}),
@@ -100,8 +127,7 @@ router.post('/sign-up', (req, res, next) => {
         }
       }));
         
-    }
-    );
+    });
   });
 });
 

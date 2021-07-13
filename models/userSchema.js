@@ -10,6 +10,7 @@ const UserSchema = new Schema({
     username: { type: String, required: true },
     username_lower: { type: String, required: true },
     password: { type: String, required: true },
+    oauthClient: {type: String},
     posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
     friends: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     reactions: [{ type: Schema.Types.ObjectId, ref: 'Reaction' }]

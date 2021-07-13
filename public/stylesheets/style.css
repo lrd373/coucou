@@ -69,6 +69,13 @@ form > * {
   width: 80%; 
 }
 
+/********************** Login **********************/
+.oauthLogo {
+  width: 20px;
+  height: 20px;
+}
+
+
 /********************** Header **********************/
 header {
   background-color: var(--teal);

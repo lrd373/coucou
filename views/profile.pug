@@ -121,7 +121,8 @@ block content
             
           //- Regular posts tab, if there are posts
           if (!deletePosts && user.posts.length > 0 && !newPostForm)
-            a.tabEditButton(href="/profile/" + currentUser._id + "/posts/delete-posts") Delete posts
+            - if (currentUser._id.toString() === user._id.toString())
+              a.tabEditButton(href="/profile/" + currentUser._id + "/posts/delete-posts") Delete posts
             if user.posts.length > 0
               each post in user.posts
                 .postCard
@@ -133,7 +134,7 @@ block content
                     p.postDate Last Updated: #{post.date_last_updated_local}
             
           //- Delete posts
-          if (deletePosts)
+          if (deletePosts && currentUser._id.toString() === user._id.toString())
             a(href="/profile/" + currentUser._id + "/posts/") Cancel
             form(action="/profile/" + currentUser._id + "/posts/delete-posts", method="POST")
               if user.posts.length > 0

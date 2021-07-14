@@ -178,6 +178,10 @@ nav > * {
     padding: 0.5rem 2rem;
   }
 
+  .tabEditButton {
+    display: block;
+  }
+
   /************ Profile Friends Tab ******************/
 
   .friendLink {
@@ -199,4 +203,13 @@ nav > * {
   .wavy-border.profileMediaTop {
     position: relative;
     bottom:-4px;
+  }
+
+  /************ Profile Posts Tab ******************/
+  .deletePostCheckbox {
+    display: inline;
+  }
+
+  .postCard {
+    display: flex;
   }

@@ -54,7 +54,7 @@ router.post('/:id/friends/search-friend', profileController.profileSearchFriend)
 // POST friends tab with new friend form
 router.post('/:id/friends/add-friend', profileController.profileAddFriend);
 
-// GET profile -- photos tab
+// GET profile photos tab
 router.get('/:id/photos', profileController.getProfilePhotos);
 
 // GET profile edit form
@@ -70,10 +70,16 @@ router.get('/:id/edit-profile-picture', profileController.getProfilePicEdit);
 router.post('/:id/edit-profile-picture', profileController.postProfilePicEdit);
 
 // GET new post form
-router.get('/:id/create-post', profileController.getNewPostForm);
+router.get('/:id/posts/create-post', profileController.getNewPostForm);
 
 // POST -- create new post
-router.post('/:id/create-post', profileController.postNewPostForm);
+router.post('/:id/posts/create-post', profileController.postNewPostForm);
+
+// GET delete posts tab
+router.get('/:id/posts/delete-posts', profileController.getDeletePosts);
+
+// POST delete posts
+router.post('/:id/posts/delete-posts', profileController.postDeletePosts);
 
 // GET new profile media form
 router.get('/:id/add-profile-media', profileController.getProfileMediaForm);

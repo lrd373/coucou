@@ -276,7 +276,6 @@ exports.getNewPostForm = (req, res, next) => {
         async.parallel({
             user: function(callback) {
                 User.findById(req.user._id)
-                .populate('posts')
                 .exec(callback);
             },
             profile: function(callback) {
@@ -322,6 +321,69 @@ exports.postNewPostForm = (req, res, next) => {
         });
     } else {
         res.redirect('/');
+    }
+};
+
+exports.getDeletePosts = (req, res, next) => {
+    if (req.user) {
+        async.parallel({
+            user: function(callback) {
+                User.findById(req.params.id)
+                .populate('posts')
+                .exec(callback);
+            },
+            
+            profile: function(callback) {
+                Profile.findOne({'user': req.params.id})
+                .populate('profilePic')
+                .exec(callback);
+            } 
+        }, (err, results) => {
+            if (err) { return next(err); }
+            
+            res.render('profile', { deletePosts: true, currentUser: req.user, user: results.user, profile: results.profile, tab: "posts" });
+        });
+    } else {
+        res.redirect('/');
+    }
+};
+
+exports.postDeletePosts = (req, res, next) => {
+   
+    for (post in req.body) {
+        let currentPostToDelete = req.body[post];
+        console.log("Indicated post ID to delete" + currentPostToDelete);
+
+        // Complete async tasks for each post marked for deletion
+        async.waterfall([
+            // Remove post from user 
+            function(callback) {
+                let userPosts = req.user.posts;
+                console.log("User posts list: " + userPosts);
+
+                let postIndex = userPosts.findIndex(userPost => userPost.toString() === currentPostToDelete.toString());
+                console.log("Index of post to delete: " + postIndex);
+
+                userPosts.splice(postIndex, 1);
+
+                // Find and update user
+                User.findByIdAndUpdate(req.user._id, {'posts': userPosts}, {new: true}, function(err, theUser) {
+                    if (err) { return next(err); }
+                    res.redirect(theUser.url);
+                });
+            },
+
+            // Delete post obj from MongoDB
+            function(callback) {
+               Post.findByIdAndRemove(currentPostToDelete, err => {
+                  if (err) { return next(err); }
+                  console.log("Post " + currentPostToDelete + " successfully deleted.");
+                  return callback;
+               });
+            }
+        ], (err, results) => {
+            if (err) { return next(err); }
+        });
     }
 };
 
@@ -376,7 +438,7 @@ exports.postProfileMediaForm = (req, res, next) => {
                 }
                 
                 createNewPicFiles().then(results => {
-                    let newPicIds = [];
+                   let newPicIds = [];
                    results.forEach(fileObj => {
                        newPicIds.push(fileObj._id);
                    });

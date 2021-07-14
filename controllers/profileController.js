@@ -369,7 +369,6 @@ exports.postDeletePosts = (req, res, next) => {
                 // Find and update user
                 User.findByIdAndUpdate(req.user._id, {'posts': userPosts}, {new: true}, function(err, theUser) {
                     if (err) { return next(err); }
-                    res.redirect(theUser.url);
                 });
             },
 
@@ -385,6 +384,7 @@ exports.postDeletePosts = (req, res, next) => {
             if (err) { return next(err); }
         });
     }
+    res.redirect(res.user.url + "/posts");
 };
 
 exports.getProfileMediaForm = (req, res, next) => {
@@ -489,7 +489,7 @@ exports.postProfileMediaForm = (req, res, next) => {
 
 exports.profileAddFriendForm = (req, res, next) => {
     if (req.user) {
-        res.render('add-friend-form');
+        res.render('add-friend-form', { currentUser: req.user });
     } else {
         res.redirect('/');
     }
@@ -594,3 +594,87 @@ exports.profileAddFriend = (req, res, next) => {
       res.redirect('/');
     }
   }
+
+exports.getDeleteFriends = (req, res, next) => {
+    if (req.user) {
+        async.parallel({
+            user: function(callback) {
+                User.findById(req.params.id)
+                .populate('friends')
+                .exec(callback);
+            },
+            
+            profile: function(callback) {
+                Profile.findOne({'user': req.params.id})
+                .populate('profilePic')
+                .exec(callback);
+            } 
+        }, (err, results) => {
+            if (err) { return next(err); }
+            
+            res.render('profile', { deleteFriends: true, currentUser: req.user, user: results.user, profile: results.profile, tab: "friends" });
+        });
+    } else {
+        res.redirect('/');
+    }
+};
+
+exports.postDeleteFriends = (req, res, next) => {
+   
+    console.log(req.body);
+    for (friend in req.body) {
+        let friendToDelete = req.body[friend];
+        console.log("Indicated friend ID to delete" + friendToDelete);
+
+        // Complete async tasks for each friend marked for deletion
+        async.waterfall([
+
+            // Remove friend from logged in user 
+            function(callback) {
+                let userFriends = req.user.friends;
+                console.log("User Friends list: " + userFriends);
+
+                let friendIndex = userFriends.findIndex(userFriend => userFriend.toString() === friendToDelete.toString());
+                console.log("Index of friend to delete: " + friendIndex);
+
+                userFriends.splice(friendIndex, 1);
+
+                // Find and update user
+                User.findByIdAndUpdate(req.user._id, {'friends': userFriends}, {new: true}, function(err, theUser) {
+                    if (err) { return next(err); }
+                });
+            },
+
+            // Find info on friend to be deleted in MongoDB
+            function(callback) {
+               User.findById(friendToDelete).exec((err, theFriend) => {
+                   if (err) { return next(err); }
+                   callback(null, theFriend);
+               });
+            },
+
+            // Remove logged in user from friend's MongoDB doc
+            function(theFriend, callback) {
+                let friendsFriends = theFriend.friends;
+                console.log("The friend's list of friends");
+                console.log(friendsFriends);
+
+                let loggedUserIndex = friendsFriends.findIndex(friendID => friendID.toString() === req.user._id.toString());
+                console.log("Index of logged in user in the friend's friend list " + loggedUserIndex);
+                friendsFriends.splice(loggedUserIndex, 1);
+
+                // Find and update friend doc
+                User.findById(theFriend._id, {'friends': friendsFriends}, {new:true}, function(err, theUpdatedFriend) {
+                    if (err) { return next(err); }
+
+                    callback(null, theUpdatedFriend);
+                });
+            }
+
+        ], (err, results) => {
+            if (err) { return next(err); }
+        });
+    }
+
+    res.redirect(req.user.url + "/friends");
+};

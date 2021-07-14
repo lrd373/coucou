@@ -188,6 +188,13 @@ nav > * {
     display: block;
   }
 
+  .friendCard {
+    display: flex;
+    justify-content: flex-start;
+    align-items: baseline;
+    gap: 1rem;
+  }
+
   /************ Profile Media Tab ******************/
   .profileMedia {
     display: block;

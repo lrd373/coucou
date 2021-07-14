@@ -76,33 +76,28 @@ block content
             a(href="/profile/" + currentUser._id +"/add-profile-media") Add some photos
 
       //----------- Friends Tab -------------
-      if (tab === "friends" && !newFriendForm)
-        .profileFriends.tabContent
-          - if (currentUser._id.toString() === user._id.toString())
-            a(href="/profile/" + currentUser._id + "/friends/add-friend-form") Add a friend 
-          if user.friends.length > 0
-            each friend in user.friends 
-              a.friendLink(href=friend.url) #{friend.fullname}
-      if (tab === "friends" && newFriendForm)
-        //- Form to search for friend, then add friend
-        h1 Look up a friend 
-        h3= errorMsg
-        form(action="profile/" + currentUser._id + "friends/search-friend" method="POST")
-          label(for="first_name") First name 
-          input(name="first_name" placeholder="first name" type="text")
-          label(for="last_name") Last name 
-          input(name="last_name" placeholder="last name" type="text")
-          h3 OR
-          label(for="username") Email
-          input(name="username" placeholder="email" type="email")
-          button Submit
-
-        if foundUsers && foundUsers.length > 0
-          form(action="profile/" + currentUser._id + "friends/add-friend" method="POST")
-            each foundUser in foundUsers 
-              label(for=foundUser.username) #{foundUser.fullname}
-              input(name=foundUser.username value=foundUser._id type="checkbox") 
-            button Add friend  
+      if (tab === "friends")
+        if (!newFriendForm)
+          .profileFriends.tabContent
+            - if (currentUser._id.toString() === user._id.toString())
+              a(href="/profile/" + currentUser._id + "/friends/add-friend-form") Add a friend
+              if user.friends.length > 0
+                a(href="/profile/" + currentUser._id + "/friends/remove-friends") Remove friends
+            
+            //- Regular friend list display
+            if user.friends.length > 0 && !deleteFriends
+              each friend in user.friends 
+                a.friendLink(href=friend.url) #{friend.fullname}
+            
+            //- Remove friends form
+            if user.friends.length > 0 && deleteFriends && currentUser._id.toString() === user._id.toString()
+              a(href="/profile/" + currentUser._id + "/friends/") Cancel
+              form(action="/profile/" + currentUser._id + "/friends/remove-friends" method="POST")
+                button Submit
+                each friend in user.friends
+                  .friendCard 
+                    input(type="checkbox" id=friend._id name="friendID" value=friend._id)
+                    label(for=friend._id) #{friend.fullname}
 
       //----------- Posts Tab -------------
       if (tab === "posts")

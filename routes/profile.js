@@ -39,52 +39,71 @@ router.get('/', profileController.homePageRedirect);
 // GET default profile page
 router.get('/:id', profileController.getProfilePage);
 
-// GET posts tab
-router.get('/:id/posts', profileController.getProfilePosts);
 
-// GET default friends tab
-router.get('/:id/friends', profileController.getProfileFriends);
+    // *************************** HEADER EDITS  ******************************
 
-// GET friends tab with new friend form
-router.get('/:id/friends/add-friend-form', profileController.profileAddFriendForm);
+    // GET bio edit form
+    router.get('/:id/edit-profile-bio', profileController.getProfileBioEdit);
 
-// POST friends tab search by friend details
-router.post('/:id/friends/search-friend', profileController.profileSearchFriend);
+    // POST to bio edit form
+    router.post('/:id/edit-profile-bio', profileController.postToProfileBioEdit);
 
-// POST friends tab with new friend form
-router.post('/:id/friends/add-friend', profileController.profileAddFriend);
+    // GET edit profile pic page
+    router.get('/:id/edit-profile-picture', profileController.getProfilePicEdit);
 
-// GET profile photos tab
-router.get('/:id/photos', profileController.getProfilePhotos);
+    // POST edit profile pic page
+    router.post('/:id/edit-profile-picture', profileController.postProfilePicEdit);
 
-// GET profile edit form
-router.get('/:id/edit-profile-bio', profileController.getProfileBioEdit);
 
-// POST to profile edit form
-router.post('/:id/edit-profile-bio', profileController.postToProfileBioEdit);
+    // *************************** POSTS TAB  ********************************
 
-// GET edit profile pic page
-router.get('/:id/edit-profile-picture', profileController.getProfilePicEdit);
+    // GET posts tab
+    router.get('/:id/posts', profileController.getProfilePosts);
 
-// POST edit profile pic page
-router.post('/:id/edit-profile-picture', profileController.postProfilePicEdit);
+    // GET new post form
+    router.get('/:id/posts/create-post', profileController.getNewPostForm);
 
-// GET new post form
-router.get('/:id/posts/create-post', profileController.getNewPostForm);
+    // POST -- create new post
+    router.post('/:id/posts/create-post', profileController.postNewPostForm);
 
-// POST -- create new post
-router.post('/:id/posts/create-post', profileController.postNewPostForm);
+    // GET delete posts tab
+    router.get('/:id/posts/delete-posts', profileController.getDeletePosts);
 
-// GET delete posts tab
-router.get('/:id/posts/delete-posts', profileController.getDeletePosts);
+    // POST delete posts
+    router.post('/:id/posts/delete-posts', profileController.postDeletePosts);
 
-// POST delete posts
-router.post('/:id/posts/delete-posts', profileController.postDeletePosts);
 
-// GET new profile media form
-router.get('/:id/add-profile-media', profileController.getProfileMediaForm);
+    // *************************** FRIENDS TAB  ********************************
 
-// POST to new profile media form
-router.post('/:id/add-profile-media', profileController.postProfileMediaForm);
+    // GET default friends tab
+    router.get('/:id/friends', profileController.getProfileFriends);
+
+    // GET friends tab with new friend form
+    router.get('/:id/friends/add-friend-form', profileController.profileAddFriendForm);
+
+    // POST friends tab search by friend details
+    router.post('/:id/friends/search-friend', profileController.profileSearchFriend);
+
+    // POST friends tab with new friend form
+    router.post('/:id/friends/add-friend', profileController.profileAddFriend);
+
+    // GET delete friends
+    router.get('/:id/friends/remove-friends', profileController.getDeleteFriends);
+
+    // POST delete friends
+    router.post('/:id/friends/remove-friends', profileController.postDeleteFriends);
+
+
+    // *************************** PHOTOS TAB  ********************************
+
+    // GET profile photos tab
+    router.get('/:id/photos', profileController.getProfilePhotos);
+
+    // GET new profile media form
+    router.get('/:id/add-profile-media', profileController.getProfileMediaForm);
+
+    // POST to new profile media form
+    router.post('/:id/add-profile-media', profileController.postProfileMediaForm);
+
 
 module.exports = router;

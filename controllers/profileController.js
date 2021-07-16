@@ -672,11 +672,7 @@ exports.postDeleteFriends = (req, res, next) => {
     console.log(friendIDs);
     console.log("Is array? " + Array.isArray(friendIDs));
 
-    // There is only 1 friend to delete
-    if (!Array.isArray(friendIDs)) {
-        
-        friendToDelete = friendIDs;
-        // Complete async tasks for friend marked for deletion
+    function processFriendDeletion (friendToDelete, callback) {
         async.waterfall([
     
             // Remove friend from logged in user 
@@ -733,74 +729,20 @@ exports.postDeleteFriends = (req, res, next) => {
             if (err) { return next(err); }
         });
     }
+
+    // There is only 1 friend to delete
+    if (!Array.isArray(friendIDs)) {
+
+        processFriendDeletion(friendIDs);
+    }
     
     // There are more than 1 friends to delete
     else {
         console.log("More than 1 friend to delete");
 
-        for (let i=0; i < friendIDs.length ; i++) {
-            friendToDelete = friendIDs[i];
-            console.log("Indicated friend to delete: " + friendToDelete);
-    
-            // Complete async tasks for each friend marked for deletion
-            async.waterfall([
-    
-                // Remove friend from logged in user 
-                function(callback) {
-                    let userFriends = req.user.friends;
-                    console.log("User Friends list: " + userFriends);
-    
-                    let friendIndex = userFriends.findIndex(userFriend => userFriend.toString() === friendToDelete.toString());
-                    console.log("Index of friend to delete: " + friendIndex);
-    
-                    if (friendIndex !== -1) {
-                        userFriends.splice(friendIndex, 1);
-                    }
-                    console.log("Update user friends list: ");
-                    console.log(userFriends);
-    
-                    // Find and update user
-                    User.findByIdAndUpdate(req.user._id, {'friends': userFriends}, {new: true}, function(err, theUser) {
-                        if (err) { return next(err); }
-                        callback(null);
-                    });
-                },
-    
-                // Find MongoDB doc of friend to be removed from user friends list
-                function(callback) {
-                   User.findById(friendToDelete).exec((err, theFriend) => {
-                       if (err) { return next(err); }
-                       console.log("Found account id of friend to be removed: " + theFriend._id);
-                       callback(null, theFriend);
-                   });
-                },
-    
-                // Remove logged in user from friend's MongoDB doc
-                function(theFriend, callback) {
-                    let friendsFriends = theFriend.friends; // truly hideous
-                    console.log("The friend's list of friends");
-                    console.log(friendsFriends);
-    
-                    let loggedUserIndex = friendsFriends.findIndex(friendID => friendID.toString() === req.user._id.toString());
-                    console.log("Index of logged in user in the friend's friend list " + loggedUserIndex);
-                    
-                    if (loggedUserIndex !== -1) {
-                        friendsFriends.splice(loggedUserIndex, 1);
-                    }
-                    console.log("New friends friend list: ");
-                    console.log(friendsFriends);
-                    
-                    // Find and update friend doc
-                    User.findByIdAndUpdate(theFriend._id, {'friends': friendsFriends}, {new:true}, function(err, theUpdatedFriend) {
-                        if (err) { return next(err); }
-                        callback(null, theUpdatedFriend);
-                    });
-                }
-    
-            ], (err, results) => {
-                if (err) { return next(err); }
-            });
-        }
+        async.map(friendIDs, processFriendDeletion, (err, results) => {
+            if (err) { return next(err); }
+        });
     }
 
     res.redirect(req.user.url + "/friends");

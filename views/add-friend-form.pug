@@ -4,7 +4,7 @@ block content
   a(href="/profile/" + currentUser._id + "/friends") Back
   h1 Look up a friend 
   h3= errorMsg
-  form(action="/search-friend" method="POST")
+  form(action="/profile/" + currentUser._id + "/friends/search-friend" method="POST")
     label(for="first_name") First name 
     input(name="first_name" placeholder="first name" type="text")
     label(for="last_name") Last name 
@@ -15,7 +15,7 @@ block content
     button Submit
 
   if foundUsers && foundUsers.length > 0
-    form(action="/add-friend" method="POST")
+    form(action="/profile/" + currentUser._id + "/friends/add-friend" method="POST")
       each foundUser in foundUsers 
         label(for=foundUser.username) #{foundUser.fullname}
         input(name=foundUser.username value=foundUser._id type="checkbox") 

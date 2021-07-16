@@ -79,7 +79,7 @@ block content
       if (tab === "friends")
         if (!newFriendForm)
           .profileFriends.tabContent
-            - if (currentUser._id.toString() === user._id.toString())
+            - if (currentUser._id.toString() === user._id.toString() && !deleteFriends)
               a(href="/profile/" + currentUser._id + "/friends/add-friend-form") Add a friend
               if user.friends.length > 0
                 a(href="/profile/" + currentUser._id + "/friends/remove-friends") Remove friends

@@ -350,12 +350,8 @@ exports.getDeletePosts = (req, res, next) => {
 
 exports.postDeletePosts = (req, res, next) => {
     const postIDs = req.body.postID;
-    let currentPostToDelete;
 
-    // There is only one post to delete:
-    if (!Array.isArray(postIDs)) {
-
-        currentPostToDelete = postIDs;
+    function processDeletePost (currentPostToDelete, callback) {
         async.waterfall([
 
             // Remove post from user 
@@ -386,48 +382,19 @@ exports.postDeletePosts = (req, res, next) => {
         ], (err, results) => {
             if (err) { return next(err); }
         });
+    }
+
+    // There is only one post to delete:
+    if (!Array.isArray(postIDs)) {
+        
+        processDeletePost(postIDs);
     } 
 
     // There is more than 1 post to delete
-    else { 
-        for (let i=0; i < postIDs.length; i++) {
-
-            currentPostToDelete = postIDs[i];
-            console.log("Indicated post ID to delete" + currentPostToDelete);
-    
-            // Complete async tasks for each post marked for deletion
-            async.waterfall([
-                // Remove post from user 
-                function(callback) {
-                    let userPosts = req.user.posts;
-                    console.log("User posts list: " + userPosts);
-    
-                    let postIndex = userPosts.findIndex(userPost => userPost.toString() === currentPostToDelete.toString());
-                    console.log("Index of post to delete: " + postIndex);
-                    
-                    if (postIndex !== -1) {
-                        userPosts.splice(postIndex, 1);
-                    }
-    
-                    // Find and update user
-                    User.findByIdAndUpdate(req.user._id, {'posts': userPosts}, {new: true}, function(err, theUser) {
-                        if (err) { return next(err); }
-                        callback(null);
-                    });
-                },
-    
-                // Delete post obj from MongoDB
-                function(callback) {
-                   Post.findByIdAndRemove(currentPostToDelete, err => {
-                      if (err) { return next(err); }
-                      console.log("Post " + currentPostToDelete + " successfully deleted.");
-                      callback(null);
-                   });
-                }
-            ], (err, results) => {
-                if (err) { return next(err); }
-            });
-        }
+    else {
+        async.map(postIDs, processDeletePost, (err, results) => {
+            if (err) { return next(err); }
+        });
     }
     
     res.redirect(req.user.url + "/posts");

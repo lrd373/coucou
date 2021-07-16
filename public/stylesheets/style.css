@@ -195,7 +195,7 @@ nav > * {
     gap: 1rem;
   }
 
-  /************ Profile Media Tab ******************/
+  /************ Profile Photos Tab ******************/
   .profileMedia {
     display: block;
     margin: 0;
@@ -210,6 +210,11 @@ nav > * {
   .wavy-border.profileMediaTop {
     position: relative;
     bottom:-4px;
+  }
+
+  .deleteImgContainer:hover {
+    background-color: red;
+    width: 2rem;
   }
 
   /************ Profile Posts Tab ******************/

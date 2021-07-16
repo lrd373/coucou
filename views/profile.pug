@@ -56,49 +56,6 @@ block content
           href="/profile/" + user._id + "/photos"
           ) Photos
 
-      //----------- Photos Tab -------------
-      if (tab === "photos")
-        .profileMedia.tabContent 
-          if newMediaForm 
-            .modalContainer
-              form(class="modalContent" action="/profile/" + currentUser._id +"/add-profile-media" method="POST" enctype="multipart/form-data") 
-                label(for="profilePic") Upload your picture
-                input(type="file" name="profileMedia" accept="image/png, image/jpeg" required)
-                button Submit
-                a(class="editCancelBtn" href="/profile") Cancel
-          if profile.media 
-            each img in profile.media 
-              img(
-              class="profileMediaPic"
-              src=`data:${img.img.contentType};base64,${Buffer.from(img.img.data).toString("base64")}`, 
-              alt=img.altText)
-          - if (currentUser._id.toString() === user._id.toString())
-            a(href="/profile/" + currentUser._id +"/add-profile-media") Add some photos
-
-      //----------- Friends Tab -------------
-      if (tab === "friends")
-        if (!newFriendForm)
-          .profileFriends.tabContent
-            - if (currentUser._id.toString() === user._id.toString() && !deleteFriends)
-              a(href="/profile/" + currentUser._id + "/friends/add-friend-form") Add a friend
-              if user.friends.length > 0
-                a(href="/profile/" + currentUser._id + "/friends/remove-friends") Remove friends
-            
-            //- Regular friend list display
-            if user.friends.length > 0 && !deleteFriends
-              each friend in user.friends 
-                a.friendLink(href=friend.url) #{friend.fullname}
-            
-            //- Remove friends form
-            if user.friends.length > 0 && deleteFriends && currentUser._id.toString() === user._id.toString()
-              a(href="/profile/" + currentUser._id + "/friends/") Cancel
-              form(action="/profile/" + currentUser._id + "/friends/remove-friends" method="POST")
-                button Submit
-                each friend in user.friends
-                  .friendCard 
-                    input(type="checkbox" id=friend._id name="friendID" value=friend._id)
-                    label(for=friend._id) #{friend.fullname}
-
       //----------- Posts Tab -------------
       if (tab === "posts")
         .profilePosts.tabContent
@@ -141,3 +98,51 @@ block content
                     .postContent
                       p.postText= post.text
                       p.postDate Last Updated: #{post.date_last_updated_local}
+                      
+      //----------- Friends Tab -------------
+      if (tab === "friends")
+        if (!newFriendForm)
+          .profileFriends.tabContent
+            - if (currentUser._id.toString() === user._id.toString() && !deleteFriends)
+              a(href="/profile/" + currentUser._id + "/friends/add-friend-form") Add a friend
+              if user.friends.length > 0
+                a(href="/profile/" + currentUser._id + "/friends/remove-friends") Remove friends
+            
+            //- Regular friend list display
+            if user.friends.length > 0 && !deleteFriends
+              each friend in user.friends 
+                a.friendLink(href=friend.url) #{friend.fullname}
+            
+            //- Remove friends form
+            if user.friends.length > 0 && deleteFriends && currentUser._id.toString() === user._id.toString()
+              a(href="/profile/" + currentUser._id + "/friends/") Cancel
+              form(action="/profile/" + currentUser._id + "/friends/remove-friends" method="POST")
+                button Submit
+                each friend in user.friends
+                  .friendCard 
+                    input(type="checkbox" id=friend._id name="friendID" value=friend._id)
+                    label(for=friend._id) #{friend.fullname}
+      
+      //----------- Photos Tab -------------
+      if (tab === "photos")
+        .profileMedia.tabContent 
+          //- Add new photos
+          if newMediaForm 
+            .modalContainer
+              form(class="modalContent" action="/profile/" + currentUser._id +"/add-profile-media" method="POST" enctype="multipart/form-data") 
+                label(for="profilePic") Upload your picture
+                input(type="file" name="profileMedia" accept="image/png, image/jpeg" required)
+                button Submit
+                a(class="editCancelBtn" href="/profile") Cancel
+          
+          //- Display current photos
+          if profile.media 
+            each img in profile.media 
+              img(
+              class="profileMediaPic"
+              src=`data:${img.img.contentType};base64,${Buffer.from(img.img.data).toString("base64")}`, 
+              alt=img.altText)
+          - if (currentUser._id.toString() === user._id.toString() && !deletePhotos)
+            a(href="/profile/" + currentUser._id +"/photos/add-photos") Add photos
+            if profile.media
+              a(href="/profile/" + currentUser._id + "/photos/delete-photos") Delete photos

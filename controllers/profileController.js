@@ -90,7 +90,7 @@ exports.getProfileFriends = (req, res, next) => {
                 .populate('profilePic')
                 .exec(callback);
             }
-            // FIND IMAGE DATA STORED IN MEDIA CHUNK AS DATA BINARY 
+
         }, (err, results) => {
             if (err) { return next(err); }
             
@@ -121,6 +121,21 @@ exports.getProfilePhotos = (req, res, next) => {
             if (err) { return next(err); }
             
             res.render('profile', { currentUser: req.user, user: results.user, profile: results.profile, tab: "photos" });
+        });
+    } else {
+        res.redirect('/');
+    }
+};
+
+// GET delete photos form
+exports.getDeletePhotos = (req, res, next) => {
+    if (req.user) {
+        Profile.findOne({'user': req.params.id})
+        .populate('user')
+        .populate('media')
+        .exec((err, theProfile) => {
+            if (err) { return next(err); }
+            res.render('delete-photos', { profile: theProfile });
         });
     } else {
         res.redirect('/');

@@ -1,13 +1,14 @@
 extends layout
 
 block content 
-  h1 Made it to delete photos!
+  h1 Click which photos you'd like to delete:
   if profile.media 
-    each img in profile.media
-      .deleteImgContainer 
-        button.deleteImgButton X
-        img(
-        class="profileMediaPic"
-        src=`data:${img.img.contentType};base64,${Buffer.from(img.img.data).toString("base64")}`, 
-        alt=img.altText)
-  
+    form(action="/profile/" + profile.user._id + "/photos/delete-photos" method="POST")
+      button Submit
+      each img in profile.media
+        .deleteImgContainer 
+          input(type="checkbox" name="photoID" value=img._id)
+          img(
+          class="profileMediaPic"
+          src=`data:${img.img.contentType};base64,${Buffer.from(img.img.data).toString("base64")}`, 
+          alt=img.altText)

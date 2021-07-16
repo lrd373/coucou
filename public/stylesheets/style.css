@@ -212,11 +212,6 @@ nav > * {
     bottom:-4px;
   }
 
-  .deleteImgContainer:hover {
-    background-color: red;
-    width: 2rem;
-  }
-
   /************ Profile Posts Tab ******************/
   .deletePostCheckbox {
     display: inline;

@@ -129,7 +129,7 @@ block content
           //- Add new photos
           if newMediaForm 
             .modalContainer
-              form(class="modalContent" action="/profile/" + currentUser._id +"/add-profile-media" method="POST" enctype="multipart/form-data") 
+              form(class="modalContent" action="/profile/" + currentUser._id +"/photos/add-photos" method="POST" enctype="multipart/form-data") 
                 label(for="profilePic") Upload your picture
                 input(type="file" name="profileMedia" accept="image/png, image/jpeg" required)
                 button Submit

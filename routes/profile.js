@@ -108,5 +108,8 @@ router.get('/:id', profileController.getProfilePage);
     // GET delete photo form
     router.get('/:id/photos/delete-photos', profileController.getDeletePhotos);
 
+    // POST delete photo form
+    router.post('/:id/photos/delete-photos', profileController.postDeletePhotos);
+
 
 module.exports = router;

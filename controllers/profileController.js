@@ -364,11 +364,14 @@ exports.postDeletePosts = (req, res, next) => {
 
                 let postIndex = userPosts.findIndex(userPost => userPost.toString() === currentPostToDelete.toString());
 
-                userPosts.splice(postIndex, 1);
+                if (postIndex !== -1) {
+                    userPosts.splice(postIndex, 1);
+                }
 
                 // Find and update user
                 User.findByIdAndUpdate(req.user._id, {'posts': userPosts}, {new: true}, function(err, theUser) {
                     if (err) { return next(err); }
+                    callback(null);
                 });
             },
 
@@ -377,7 +380,7 @@ exports.postDeletePosts = (req, res, next) => {
                Post.findByIdAndRemove(currentPostToDelete, err => {
                   if (err) { return next(err); }
                   console.log("Post " + currentPostToDelete + " successfully deleted.");
-                  return callback;
+                  callback(null);
                });
             }
         ], (err, results) => {
@@ -401,12 +404,15 @@ exports.postDeletePosts = (req, res, next) => {
     
                     let postIndex = userPosts.findIndex(userPost => userPost.toString() === currentPostToDelete.toString());
                     console.log("Index of post to delete: " + postIndex);
-    
-                    userPosts.splice(postIndex, 1);
+                    
+                    if (postIndex !== -1) {
+                        userPosts.splice(postIndex, 1);
+                    }
     
                     // Find and update user
                     User.findByIdAndUpdate(req.user._id, {'posts': userPosts}, {new: true}, function(err, theUser) {
                         if (err) { return next(err); }
+                        callback(null);
                     });
                 },
     
@@ -415,7 +421,7 @@ exports.postDeletePosts = (req, res, next) => {
                    Post.findByIdAndRemove(currentPostToDelete, err => {
                       if (err) { return next(err); }
                       console.log("Post " + currentPostToDelete + " successfully deleted.");
-                      return callback;
+                      callback(null);
                    });
                 }
             ], (err, results) => {
@@ -660,15 +666,19 @@ exports.getDeleteFriends = (req, res, next) => {
 };
 
 exports.postDeleteFriends = (req, res, next) => {
-   
-    console.log(req.body);
-    for (friend in req.body) {
-        let friendToDelete = req.body[friend];
-        console.log("Indicated friend ID to delete" + friendToDelete);
+    const friendIDs = req.body.friendID;
+    let friendToDelete;
+    
+    console.log(friendIDs);
+    console.log("Is array? " + Array.isArray(friendIDs));
 
-        // Complete async tasks for each friend marked for deletion
+    // There is only 1 friend to delete
+    if (!Array.isArray(friendIDs)) {
+        
+        friendToDelete = friendIDs;
+        // Complete async tasks for friend marked for deletion
         async.waterfall([
-
+    
             // Remove friend from logged in user 
             function(callback) {
                 let userFriends = req.user.friends;
@@ -677,11 +687,14 @@ exports.postDeleteFriends = (req, res, next) => {
                 let friendIndex = userFriends.findIndex(userFriend => userFriend.toString() === friendToDelete.toString());
                 console.log("Index of friend to delete: " + friendIndex);
 
-                userFriends.splice(friendIndex, 1);
+                if (friendIndex !== -1) {
+                    userFriends.splice(friendIndex, 1);
+                }
 
                 // Find and update user
                 User.findByIdAndUpdate(req.user._id, {'friends': userFriends}, {new: true}, function(err, theUser) {
                     if (err) { return next(err); }
+                    callback(null);
                 });
             },
 
@@ -701,10 +714,15 @@ exports.postDeleteFriends = (req, res, next) => {
 
                 let loggedUserIndex = friendsFriends.findIndex(friendID => friendID.toString() === req.user._id.toString());
                 console.log("Index of logged in user in the friend's friend list " + loggedUserIndex);
-                friendsFriends.splice(loggedUserIndex, 1);
+
+                if (loggedUserIndex !== -1) {
+                    friendsFriends.splice(loggedUserIndex, 1);
+                }
+                console.log("New friend's friend list");
+                console.log(friendsFriends);
 
                 // Find and update friend doc
-                User.findById(theFriend._id, {'friends': friendsFriends}, {new:true}, function(err, theUpdatedFriend) {
+                User.findByIdAndUpdate(theFriend._id, {'friends': friendsFriends}, {new:true}, function(err, theUpdatedFriend) {
                     if (err) { return next(err); }
 
                     callback(null, theUpdatedFriend);
@@ -714,6 +732,75 @@ exports.postDeleteFriends = (req, res, next) => {
         ], (err, results) => {
             if (err) { return next(err); }
         });
+    }
+    
+    // There are more than 1 friends to delete
+    else {
+        console.log("More than 1 friend to delete");
+
+        for (let i=0; i < friendIDs.length ; i++) {
+            friendToDelete = friendIDs[i];
+            console.log("Indicated friend to delete: " + friendToDelete);
+    
+            // Complete async tasks for each friend marked for deletion
+            async.waterfall([
+    
+                // Remove friend from logged in user 
+                function(callback) {
+                    let userFriends = req.user.friends;
+                    console.log("User Friends list: " + userFriends);
+    
+                    let friendIndex = userFriends.findIndex(userFriend => userFriend.toString() === friendToDelete.toString());
+                    console.log("Index of friend to delete: " + friendIndex);
+    
+                    if (friendIndex !== -1) {
+                        userFriends.splice(friendIndex, 1);
+                    }
+                    console.log("Update user friends list: ");
+                    console.log(userFriends);
+    
+                    // Find and update user
+                    User.findByIdAndUpdate(req.user._id, {'friends': userFriends}, {new: true}, function(err, theUser) {
+                        if (err) { return next(err); }
+                        callback(null);
+                    });
+                },
+    
+                // Find MongoDB doc of friend to be removed from user friends list
+                function(callback) {
+                   User.findById(friendToDelete).exec((err, theFriend) => {
+                       if (err) { return next(err); }
+                       console.log("Found account id of friend to be removed: " + theFriend._id);
+                       callback(null, theFriend);
+                   });
+                },
+    
+                // Remove logged in user from friend's MongoDB doc
+                function(theFriend, callback) {
+                    let friendsFriends = theFriend.friends; // truly hideous
+                    console.log("The friend's list of friends");
+                    console.log(friendsFriends);
+    
+                    let loggedUserIndex = friendsFriends.findIndex(friendID => friendID.toString() === req.user._id.toString());
+                    console.log("Index of logged in user in the friend's friend list " + loggedUserIndex);
+                    
+                    if (loggedUserIndex !== -1) {
+                        friendsFriends.splice(loggedUserIndex, 1);
+                    }
+                    console.log("New friends friend list: ");
+                    console.log(friendsFriends);
+                    
+                    // Find and update friend doc
+                    User.findByIdAndUpdate(theFriend._id, {'friends': friendsFriends}, {new:true}, function(err, theUpdatedFriend) {
+                        if (err) { return next(err); }
+                        callback(null, theUpdatedFriend);
+                    });
+                }
+    
+            ], (err, results) => {
+                if (err) { return next(err); }
+            });
+        }
     }
 
     res.redirect(req.user.url + "/friends");

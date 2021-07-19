@@ -600,11 +600,36 @@ exports.profileAddFriendForm = (req, res, next) => {
 }
 
 exports.profileSearchFriend =  (req, res, next) => {
+
+    async.waterfall([
+
+        // Find users in database based on form data
+        function(callback) {
+
+        },
+
+        // Find current logged in user in MongoDB
+        function(foundUsers, callback) {
+
+        },
+
+        // Check and clean found users:
+        // exclude from possible new friend list: 
+        // current friends of logged in user, current logged in user
+        function(foundUsers, currentUser, callback) {
+
+        },
+
+    ], (err, results) => {});
     // Username
     if (req.body.username) {
-      User.find({username_lower: req.body.username.toLowerCase()}).exec((err, foundUsers) => {
-        if (err) {return next(err); }
-        res.render('add-friend-form', { foundUsers: foundUsers });
+      User.find({$or: [
+          {username_lower: req.body.username.toLowerCase()}, 
+          {username: req.body.username},
+          {username: req.body.username.toLowerCase()}
+        ]}).exec((err, foundUsers) => {
+          if (err) {return next(err); }
+          res.render('add-friend-form', { foundUsers: foundUsers });
       });
   
     // First name and last name

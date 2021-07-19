@@ -2,14 +2,12 @@ extends layout
 
 block content 
   h1=user.first_name + "'s Feed"
-  if user.friends && user.friends.length > 0
+  if user.friends && user.friends.length > 0 && friendPosts.length > 0
     h2 What your friends have been up to:
-    each friend in friends
-      if friend.posts && friend.posts.length !== 0
+    each postObj in friendPosts
         h3
-          a(href=friend.url)  #{friend.fullname}
-        each post in friend.posts
-          p #{post.text}, #{post.date_last_updated_local}
+          a(href=postObj.friendUrl)  #{postObj.friendFullname}
+        p #{postObj.post.text}, #{postObj.post.date_last_updated_local}
   if user.posts && user.posts.length > 0
     h2 What you've been up to: 
     each post in user.posts 

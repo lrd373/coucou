@@ -67,6 +67,22 @@ exports.getProfilePosts = (req, res, next) => {
             // FIND IMAGE DATA STORED IN MEDIA CHUNK AS DATA BINARY 
         }, (err, results) => {
             if (err) { return next(err); }
+
+            // Sort posts by date last updated
+            let profileUserPosts = results.user.posts;
+            profileUserPosts.sort((postObj1, postObj2) => {
+              if (postObj1.date_last_updated < postObj2.date_last_updated) {
+                return 1;
+              }
+              if (postObj1.date_last_updated.getTime() === postObj2.date_last_updated.getTime()) {
+                return 0;
+              } else {
+                return -1;
+              }
+            });
+
+            // Update posts list on user whose profile will be displayed
+            results.user.posts = profileUserPosts;
             
             res.render('profile', { currentUser: req.user, user: results.user, profile: results.profile, tab: "posts" });
         });
@@ -93,6 +109,22 @@ exports.getProfileFriends = (req, res, next) => {
 
         }, (err, results) => {
             if (err) { return next(err); }
+
+            // Sort friends by last name
+            let profileUserFriends = results.user.friends;
+            profileUserFriends.sort((friendObj1, friendObj2) => {
+              if (friendObj1.last_name_lower > friendObj2.last_name_lower) {
+                return 1;
+              }
+              if (friendObj1.last_name_lower === friendObj2.last_name_lower) {
+                return 0;
+              } else {
+                return -1;
+              }
+            });
+
+            // Update posts list on user whose profile will be displayed
+            results.user.friends = profileUserFriends;
             
             res.render('profile', { currentUser: req.user, user: results.user, profile: results.profile, tab: "friends" });
         });

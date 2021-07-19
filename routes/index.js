@@ -152,8 +152,60 @@ router.get('/feed', (req, res, next) => {
       if (err) { return next(err); }
 
       // SORT POSTS BY DATE BEFORE SENDING TO VIEW
+      let profileUserPosts = results.user.posts;
+      profileUserPosts.sort((postObj1, postObj2) => {
+        if (postObj1.date_last_updated < postObj2.date_last_updated) {
+          return 1;
+        }
+        if (postObj1.date_last_updated.getTime() === postObj2.date_last_updated.getTime()) {
+          return 0;
+        } else {
+          return -1;
+        }
+      });
+
+      // Update posts list on user whose profile will be displayed
+      results.user.posts = profileUserPosts;
+
+      let friendPosts = [];
       
-      res.render('feed', { user: results.user, friends: results.friends_list });
+      for (const index in results.friends_list) {
+        let friend = results.friends_list[index];
+
+        // For each post by each friend, create new friend post object
+        // to connect friend information to each post
+        for (const index in friend.posts) {
+          let post = friend.posts[index];
+          
+          const friendPostObj = {
+            friendId: friend._id,
+            friendFirstName: friend.first_name,
+            friendFirstNameLower: friend.first_name_lower,
+            friendLastName: friend.last_name,
+            friendLastNameLower: friend.last_name_lower,
+            friendFullname: friend.fullname,
+            friendUrl: friend.url,
+            post: post
+          }
+          // and add it to the array friendPosts
+          friendPosts.push(friendPostObj);
+        }
+      }
+      
+      // Sort friendPosts by post date
+      friendPosts.sort((friendPostObj1, friendPostObj2) => {
+        if (friendPostObj1.post.date_last_updated < friendPostObj2.post.date_last_updated) {
+          return 1;
+        }
+        if (friendPostObj1.post.date_last_updated.getTime() === friendPostObj2.post.date_last_updated.getTime()) {
+          return 0;
+        } else {
+          return -1;
+        }
+      });
+
+      // send Sorted array to view
+      res.render('feed', { user: results.user, friendPosts: friendPosts });
     });
   } else {
     res.redirect('/');

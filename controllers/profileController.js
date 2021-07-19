@@ -605,61 +605,128 @@ exports.profileSearchFriend =  (req, res, next) => {
 
         // Find users in database based on form data
         function(callback) {
-
+          // Username
+          if (req.body.username) {
+              User.find({$or: [
+                  {username_lower: req.body.username.toLowerCase()}, 
+                  {username: req.body.username},
+                  {username: req.body.username.toLowerCase()}
+              ]}).exec((err, foundUsers) => {
+                  if (err) {return next(err); }
+                  if (foundUsers.length === 0) {
+                    res.render('add-friend-form', {errorMsg: 'Username not found'});
+                  }
+                  callback(null, foundUsers);
+              });
+      
+          // First name and last name
+          } else if (req.body.last_name && req.body.first_name) {
+              User.find({ last_name_lower: req.body.last_name.toLowerCase(), first_name_lower: req.body.first_name.toLowerCase()})
+              .exec((err, foundUsers) => {
+                if (err) {return next(err); }
+                if (foundUsers.length === 0) {
+                    res.render('add-friend-form', {errorMsg: 'First name and last name not found'});
+                }
+                callback(null, foundUsers);
+              });
+          
+          // Just last name
+          } else if (req.body.last_name) {
+              User.find({ last_name_lower: req.body.last_name.toLowerCase()})
+              .exec((err, foundUsers) => {
+                if (err) {return next(err); }
+                if (foundUsers.length === 0) {
+                    res.render('add-friend-form', {errorMsg: 'User last name not found'});
+                }
+                callback(null, foundUsers);
+              });
+      
+          // Just first name
+          } else if (req.body.first_name) {
+              User.find({ first_name_lower: req.body.first_name.toLowerCase()})
+              .exec((err, foundUsers) => {
+                if (err) {return next(err); }
+                if (foundUsers.length === 0) {
+                    res.render('add-friend-form', {errorMsg: 'User first name not found'});
+                }
+                callback(null, foundUsers);
+              });
+      
+          // No search criteria were entered
+          } else {
+              res.render('add-friend-form', {errorMsg: 'Please fill in at least one field'});
+          }
         },
 
         // Find current logged in user in MongoDB
         function(foundUsers, callback) {
-
+            if (req.user) {
+              User.findById(req.user._id)
+              .exec((err, currentUser) => {
+                if (err) { return next(err); }
+                callback(null, foundUsers, currentUser);
+              });
+            } else {
+                res.redirect('/');
+            }
         },
 
         // Check and clean found users:
         // exclude from possible new friend list: 
         // current friends of logged in user, current logged in user
         function(foundUsers, currentUser, callback) {
+            let possibleFriends = foundUsers;
+            console.log("All found possibilities:");
+            console.log(possibleFriends);
 
+            let currentUserFriends = currentUser.friends;
+            console.log("Logged in user's existing friends list:");
+            console.log(currentUserFriends);
+
+            let errorMsg = "";
+
+            for (const friend of possibleFriends) {
+              let possibleFriendsIndex = possibleFriends.findIndex(
+                friendObj => friendObj._id.toString() === friend._id.toString()
+              ); 
+
+              // if current user came up in search, 
+              // excise from possible friend list
+              if (friend._id.toString() === req.user._id.toString()) {
+                console.log("Logged in user came up in search, removing from possible friends");
+                // remove current user from possible friend list
+                possibleFriends.splice(possibleFriendsIndex, 1);
+              }
+
+              // if friend is found in current user's friend list,
+              // excise from possible friend list
+              let currentUserIndex = currentUserFriends.findIndex(id => id.toString() === friend._id.toString())
+              if (currentUserIndex !== -1) {
+                console.log("Someone who is already a friend came up in search, removing them from list:");
+                console.log(friend);
+                // remove friend from possible friend list
+                possibleFriends.splice(possibleFriendsIndex, 1);
+                errorMsg = "That user is already your friend.";
+              }
+            }
+
+            // If search was able to find a user that was not the current user, 
+            // nor already on the current user's friend list, 
+            // reset the error message so that no confusing messaging appears
+            if (possibleFriends.length > 0) {
+              console.log("1 or more possible new friends were found, erasing error message");
+              errorMsg = "";
+            }
+
+            callback(null, {possibleFriends, errorMsg});
         },
 
-    ], (err, results) => {});
-    // Username
-    if (req.body.username) {
-      User.find({$or: [
-          {username_lower: req.body.username.toLowerCase()}, 
-          {username: req.body.username},
-          {username: req.body.username.toLowerCase()}
-        ]}).exec((err, foundUsers) => {
-          if (err) {return next(err); }
-          res.render('add-friend-form', { foundUsers: foundUsers });
-      });
-  
-    // First name and last name
-    } else if (req.body.last_name && req.body.first_name) {
-      User.find({ last_name_lower: req.body.last_name.toLowerCase(), first_name_lower: req.body.first_name.toLowerCase()})
-      .exec((err, foundUsers) => {
-        if (err) {return next(err); }
-        res.render('add-friend-form', { foundUsers: foundUsers });
-      });
+    ], (err, results) => {
+      if (err) { return next(err); }
+
+      res.render('add-friend-form', { foundUsers: results.possibleFriends, errorMsg: results.errorMsg });
+    });
     
-    // Just last name
-    } else if (req.body.last_name) {
-      User.find({ last_name_lower: req.body.last_name.toLowerCase()})
-      .exec((err, foundUsers) => {
-        if (err) {return next(err); }
-        res.render('add-friend-form', { foundUsers: foundUsers });
-      });
-  
-    // Just first name
-    } else if (req.body.first_name) {
-      User.find({ first_name_lower: req.body.first_name.toLowerCase()})
-      .exec((err, foundUsers) => {
-        if (err) {return next(err); }
-        res.render('add-friend-form', { foundUsers: foundUsers });
-      });
-  
-    // No search criteria were entered
-    } else {
-      res.render('add-friend-form', {errorMsg: 'Please fill in at least one field'});
-    }
   }
 
 exports.profileAddFriend = (req, res, next) => {

@@ -6,7 +6,7 @@
 }
 
 body {
-  font: 14px "KoHo", sans-serif;
+  font: 1rem "KoHo", sans-serif;
   margin: 0;
 }
 
@@ -26,27 +26,40 @@ form > * {
   margin: 10px 0;
 }
 
+.formHeader {
+  font-size: 5rem;
+}
+
+textarea {
+  font-size: 2rem;
+}
+
 .button {
   background-color: var(--macaw-pink);
   border: none;
-  border-radius: 5px;
-  color: black;
-  font-size: 1.25rem;
-  font-weight: normal;
+  border-radius: 5%;
+  color: white;
+  font-size: 2.5rem;
+  font-weight: 500;
+  margin: 2rem 0;
   text-align: center;
-  padding: 5px;
+  padding: 1rem;
   width: max-content;
 }
 
-.editIcon {
-  width: 15px;
-  height: 15px;
+.backButton {
+  border: solid 0.3rem var(--macaw-pink);
+  border-radius: 0.5rem;
+  color: var(--macaw-pink);
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding: 0.75rem;
 }
 
-.wavy-border {
-  width: 100%;
-  margin: 0;
-  padding: 0;
+.editIcon {
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-right: 0.5rem;
 }
 
 /* Form modal styling */
@@ -60,6 +73,17 @@ form > * {
   overflow: auto; /* Enable scroll if needed */
   background-color: rgb(0,0,0); /* Fallback color */
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */ 
+}
+
+.modalHeader {
+  font-size: 3.5rem;
+  font-weight: 700;
+}
+
+.modalContainer input {
+  font-family: "KoHo", sans-serif;
+  font-size: 2.75rem;
+  margin: 1.5rem 0;
 }
 
 .modalContent {
@@ -96,7 +120,7 @@ header {
 .logo {
   color: var(--macaw-pink);
   display: inline;
-  font: 3rem "Pattaya", cursive; 
+  font: 3.75rem "Pattaya", cursive; 
   margin: 0 15px;
   position: relative;
   top: 5px;
@@ -121,6 +145,7 @@ nav > * {
 }
 
 .navLink {
+  font-size: 2.5rem;
   position: relative;
   bottom: 0.25rem;
 }
@@ -142,21 +167,51 @@ nav > * {
     padding: 2rem 2rem 1rem;
   }
 
+  .profileNameAndBio {
+    position: relative;
+    margin-left: 2rem;
+  }
+
   .userFullName {
-    font-size: 3.5rem;
+    font-size: 4.5rem;
     font-weight: 500;
     margin: 0;
   }
 
-  .profilePic {
+  .profilePicContainer {
     background-color: white;
     border-radius: 50%;
-    width: 200px;
-    height: auto;
+    width: 22rem;
+    height: 22rem;
+    overflow: hidden;
+  }
+
+  .profilePic {
+    min-width: 22rem;
+    min-height: 22rem;
+    max-width: 22rem;
+    max-height: 22rem;
+    object-fit: cover;
   }
 
   .profileBioContainer {
     display: flex;
+  }
+
+  .profileBio {
+    font-size: 2.5rem;
+  }
+
+  .profileHeaderEditButtons {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    text-align: right;
+  }
+
+  .editProfile {
+    font-size: 1.9rem;
+    display: block;
   }
 
   /************ Profile Tab Headers ******************/
@@ -220,3 +275,13 @@ nav > * {
   .postCard {
     display: flex;
   }
+
+/************* EDIT BIO FORM *******************/
+
+.editBioFormContainer {
+  padding: 3rem;
+}
+
+.backButton.editBio {
+  font-size: 2.5rem;
+}

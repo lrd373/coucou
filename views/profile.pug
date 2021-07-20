@@ -9,11 +9,17 @@ block content
       //- Upload profile pic form
       if newProfilePic 
           .modalContainer
-            form(class="modalContent" action="/profile/" + currentUser._id + "/edit-profile-picture" method="POST" enctype="multipart/form-data")
-              label(for="profilePic") Upload your picture 
+            form(
+              class="modalContent" 
+              action="/profile/" + currentUser._id + "/edit-profile-picture" 
+              method="POST" 
+              enctype="multipart/form-data"
+            )
+              a(class="backButton" href="/profile/" + currentUser._id +"/posts") ✖️
+              label(class="modalHeader" for="profilePic") Upload your picture 
               input(type="file" name="profilePic" accept="image/png, image/jpeg" required)
               button.button Submit
-              a(class="editCancelBtn button" href="/profile") Cancel
+              
 
       .profilePicContainer
         if profile.profilePic 
@@ -22,23 +28,21 @@ block content
             class="profilePic"
             src=`data:${profile.profilePic.img.contentType};base64,${Buffer.from(profile.profilePic.img.data).toString("base64")}`, 
             alt=profile.profilePic.altText)
-          - if (currentUser._id.toString() === user._id.toString())
-            a(class="editProfilePic editLink" href="/profile/" + currentUser._id + "/edit-profile-picture")
-              img(class="editIcon" src="/images/edit.png", alt="Edit profile picture")
-        else if (currentUser._id.toString() === user._id.toString())
-            a(class="editProfilePic" href="/profile/" + currentUser._id + "/edit-profile-picture") Add a profile picture
       
       .profileNameAndBio
-        h1.userFullName= user.fullname   
+        .profileFullname
+          h1.userFullName= user.fullname   
         .profileBioContainer
           if profile.bio 
-            p= profile.bio
-            - if (currentUser._id.toString() === user._id.toString())
-              a(class="editProfileBio" href="/profile/" + currentUser._id + '/edit-profile-bio')
-                img(class="editIcon" src="/images/edit.png", alt="Edit profile bio")
-          else
-            - if (currentUser._id.toString() === user._id.toString())
-              a(href="/profile/" + currentUser._id + '/edit-profile-bio') Add a bio 
+            p.profileBio= profile.bio
+        .profileHeaderEditButtons 
+          - if (currentUser._id.toString() === user._id.toString())
+              a(class="editProfile" href="/profile/" + currentUser._id + "/edit-profile-picture") 
+                img(class="editIcon" src="/images/edit.png", alt="Edit profile picture")
+                | Profile Picture
+              a(class="editProfile" href="/profile/" + currentUser._id + '/edit-profile-bio') 
+                img(class="editIcon" src="/images/edit.png", alt="Edit profile picture")
+                | Bio
     
     //----------- PROFILE TAB CONTENT -------------
     .profileTabs

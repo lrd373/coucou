@@ -1,14 +1,14 @@
 extends layout 
 
-block content 
-  a(href="/profile") Back
-  h1 Edit Your Bio
-  form(action="" method="POST")  
-    label(for="bio") Bio 
-    textarea(name="bio", cols="80", rows="10") 
-      if profile 
-        | #{profile.bio}
-    button Submit
+block content
+  .editBioFormContainer
+    a(class="backButton editBio" href="/profile/" + profile.user + "/posts") Back
+    h1.formHeader Edit Your Bio
+    form(action="" method="POST")
+      textarea(name="bio", cols="30", rows="8") 
+        if profile 
+          | #{profile.bio}
+      button.button Submit
       
 
 

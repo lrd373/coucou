@@ -5,6 +5,7 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20');
 const cookieSession = require('cookie-session');
 const LocalStrategy = require('passport-local').Strategy;
+const flash = require('connect-flash');
 const createError = require('http-errors');
 const path = require('path');
 const async = require('async');
@@ -69,7 +70,7 @@ app.use(multer({
 
 // Configure LOCAL passport authentication strategy
 passport.use(
-  new LocalStrategy((username, password, done) => {
+  new LocalStrategy({passReqToCallback : true}, (username, password, done) => {
     User.findOne({ username: username }, (err, user) => {
       if (err) { return done(err); }
       if (!user) { 
@@ -168,6 +169,7 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(flash());
 app.use('/', indexRouter);
 app.use('/profile/', profileRouter);
 

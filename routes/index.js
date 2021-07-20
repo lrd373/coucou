@@ -68,7 +68,7 @@ router.get('/secret', (req, res, next) => {
 
 // POST to login form
 router.post('/log-in', 
-  passport.authenticate('local', { failureRedirect: '/'}),
+  passport.authenticate('local', { failureRedirect: '/' }),
   (req, res) => {
     // passport authentication successful
     // req.user now contains authenticated user
@@ -76,7 +76,7 @@ router.post('/log-in',
     res.redirect(profileUrl);
   }
 );
-  
+
 // GET logout page
 router.get('/log-out', (req, res) => {
   req.logout();

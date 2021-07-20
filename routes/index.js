@@ -67,15 +67,19 @@ router.get('/secret', (req, res, next) => {
 });
 
 // POST to login form
-router.post('/log-in', 
-  passport.authenticate('local', { failureRedirect: '/' }),
-  (req, res) => {
-    // passport authentication successful
-    // req.user now contains authenticated user
-    let profileUrl = '/profile/' + req.user._id;
-    res.redirect(profileUrl);
-  }
-);
+router.post('/log-in', (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) { return next(err); }
+    if (!user) {
+      return res.render('index', { errorMsg: info.message });
+    }
+    req.login(user, (err) => {
+      if (err) { return next(err); }
+      return res.redirect('/profile/' + user._id);
+    });
+  })(req, res, next);
+});
+ 
 
 // GET logout page
 router.get('/log-out', (req, res) => {

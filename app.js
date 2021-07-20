@@ -70,7 +70,7 @@ app.use(multer({
 
 // Configure LOCAL passport authentication strategy
 passport.use(
-  new LocalStrategy({passReqToCallback : true}, (username, password, done) => {
+  new LocalStrategy((username, password, done) => {
     User.findOne({ username: username }, (err, user) => {
       if (err) { return done(err); }
       if (!user) { 
@@ -169,7 +169,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(flash());
 app.use('/', indexRouter);
 app.use('/profile/', profileRouter);
 

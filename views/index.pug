@@ -6,6 +6,8 @@ block content
     a(href="/log-out") LOG OUT 
   else 
     h1 Please log in 
+    if errorMsg 
+      h2=errorMsg
     form(action="/log-in" method="POST")
       label(for="username") Username 
       input(name="username" placeholder="username" type="text")
@@ -17,4 +19,3 @@ block content
       a(href="/auth/google") 
         img.oauthLogo(src="/images/google.png" alt="Log in with Google") 
         | Google
-      

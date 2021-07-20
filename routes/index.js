@@ -107,8 +107,29 @@ router.post('/sign-up', (req, res, next) => {
     });
 
     async.waterfall([
+      // check if entered username exists in database already
+      // if so, re-render sign-up page with error message
+      function(callback) { 
+        User.findOne({$or: [
+          {username_lower: req.body.username.toLowerCase()}, 
+          {username: req.body.username},
+          {username: req.body.username.toLowerCase()}
+        ]}).exec((err, foundUser) => {
+          if (err) { return next(err); }
+          // If a user with that email exists in database already
+          else if (foundUser) {
+            return res.render('sign-up-form', { errorMsg: 'A user with that email already exists' });
+          }
+          // If user with that email is not in database
+          else if (!foundUser) {
+            callback(null);
+          }
+        });
+      },
+      
+      // save entered user info to MongoDB database, then create profile doc
       function(callback) {
-        user.save(err => {  // save it to MongoDB database, then create profile doc
+        user.save(err => {  
           if (err) { return next(err); }
         });
         callback(null, user);

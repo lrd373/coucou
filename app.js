@@ -48,7 +48,7 @@ app.set('view engine', 'pug');
 // Cookie Session configuration
 app.use(cookieSession({
   maxAge: 24*60*60*1000, // One day in ms
-  keys: ['a;selifjsia;seifjaij3f29309fh']
+  keys: [process.env.COOKIE_SESSION_KEY]
 }));
 
 app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: true }));
@@ -65,7 +65,6 @@ app.use(multer({
     return filename;
   }
 }).any());
-
 
 
 // Configure LOCAL passport authentication strategy

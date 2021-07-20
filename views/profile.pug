@@ -63,9 +63,15 @@ block content
       //----------- Posts Tab -------------
       if (tab === "posts")
         .profilePosts.tabContent
-
-          - if (currentUser._id.toString() === user._id.toString()) 
-            a.tabEditButton(href="/profile/" + currentUser._id + "/posts/create-post") Create new post
+          .tabEditButtonContainer
+            - if (currentUser._id.toString() === user._id.toString()) 
+              a.tabEditButton(href="/profile/" + currentUser._id + "/posts/create-post") 
+                img(class="editIcon" src="/images/edit.png", alt="Create New Post")
+                | Create new post
+              if (!deletePosts && user.posts.length > 0 && !newPostForm)
+                a.tabEditButton(href="/profile/" + currentUser._id + "/posts/delete-posts") 
+                  img(class="editIcon" src="/images/trash.png", alt="Delete posts")
+                  | Delete posts
 
           if newPostForm 
             a(href=profile.url) X 
@@ -77,8 +83,6 @@ block content
             
           //- Regular posts tab, if there are posts
           if (!deletePosts && user.posts.length > 0 && !newPostForm)
-            - if (currentUser._id.toString() === user._id.toString())
-              a.tabEditButton(href="/profile/" + currentUser._id + "/posts/delete-posts") Delete posts
             if user.posts.length > 0
               each post in user.posts
                 .postCard

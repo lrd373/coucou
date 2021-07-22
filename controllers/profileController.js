@@ -963,6 +963,22 @@ exports.getDeleteFriends = (req, res, next) => {
             } 
         }, (err, results) => {
             if (err) { return next(err); }
+
+            // Sort friends by last name
+            let profileUserFriends = results.user.friends;
+            profileUserFriends.sort((friendObj1, friendObj2) => {
+              if (friendObj1.last_name_lower > friendObj2.last_name_lower) {
+                return 1;
+              }
+              if (friendObj1.last_name_lower === friendObj2.last_name_lower) {
+                return 0;
+              } else {
+                return -1;
+              }
+            });
+
+            // Update posts list on user whose profile will be displayed
+            results.user.friends = profileUserFriends;
             
             res.render('profile', { deleteFriends: true, currentUser: req.user, user: results.user, profile: results.profile, tab: "friends" });
         });

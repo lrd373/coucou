@@ -32,26 +32,26 @@ const { populate } = require('../models/userSchema');
 // GET profile -- photos tab
 exports.getProfilePhotos = (req, res, next) => {
   if (req.user) {
-      async.parallel({
-          user: function(callback) {
-              User.findById(req.params.id)
-              .exec(callback);
-          },
-          
-          profile: function(callback) {
-              Profile.findOne({'user': req.params.id})
-              .populate('profilePic')
-              .populate('media')
-              .exec(callback);
-          }
-          // FIND IMAGE DATA STORED IN MEDIA CHUNK AS DATA BINARY 
-      }, (err, results) => {
-          if (err) { return next(err); }
-          
-          res.render('profile', { currentUser: req.user, user: results.user, profile: results.profile, tab: "photos" });
-      });
+    async.parallel({
+      user: function(callback) {
+        User.findById(req.params.id)
+        .exec(callback);
+      },
+      
+      profile: function(callback) {
+        Profile.findOne({'user': req.params.id})
+        .populate('profilePic')
+        .populate('media')
+        .exec(callback);
+      }
+      // FIND IMAGE DATA STORED IN MEDIA CHUNK AS DATA BINARY 
+    }, (err, results) => {
+      if (err) { return next(err); }
+      
+      res.render('profile', { currentUser: req.user, user: results.user, profile: results.profile, tab: "photos" });
+    });
   } else {
-      res.redirect('/');
+    res.redirect('/');
   }
 };
 

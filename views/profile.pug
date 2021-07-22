@@ -115,11 +115,7 @@ block content
       if (tab === "friends")
         if (!newFriendForm)
           .profileFriends.tabContent
-            - if (currentUser._id.toString() === user._id.toString() && !deleteFriends)
-              a(href="/profile/" + currentUser._id + "/friends/add-friend-form") Add a friend
-              if user.friends.length > 0
-                a(href="/profile/" + currentUser._id + "/friends/remove-friends") Remove friends
-            
+               
             //- Regular friend list display
             if user.friends.length > 0 && !deleteFriends
               each friend in user.friends 
@@ -134,7 +130,16 @@ block content
                   .friendCard 
                     input(type="checkbox" id=friend._id name="friendID" value=friend._id)
                     label(for=friend._id) #{friend.fullname}
-      
+
+            //- Edit friends list buttons 
+            - if (currentUser._id.toString() === user._id.toString() && !deleteFriends)
+              .tabEditButtonContainer
+                a.tabEditButton(href="/profile/" + currentUser._id + "/friends/add-friend-form") 
+                  | + Add friends
+                if user.friends.length > 0
+                  a.tabEditButton(href="/profile/" + currentUser._id + "/friends/remove-friends") 
+                    | - Remove friends
+
       //----------- Photos Tab -------------
       if (tab === "photos")
         .profileMedia.tabContent 

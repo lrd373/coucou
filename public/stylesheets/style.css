@@ -282,6 +282,7 @@ nav > * {
 
   .friendLink {
     display: block;
+    font-size: 2rem;
   }
 
   .friendCard {

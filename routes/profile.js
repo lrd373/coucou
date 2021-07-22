@@ -79,13 +79,13 @@ router.get('/:id', profileController.getProfilePage);
     router.get('/:id/friends', profileController.getProfileFriends);
 
     // GET friends tab with new friend form
-    router.get('/:id/friends/add-friend-form', profileController.profileAddFriendForm);
+    router.get('/:id/friends/add-friend-form', profileController.getAddFriendForm);
 
     // POST friends tab search by friend details
-    router.post('/:id/friends/search-friend', profileController.profileSearchFriend);
+    router.post('/:id/friends/search-friend', profileController.postSearchFriend);
 
     // POST friends tab with new friend form
-    router.post('/:id/friends/add-friend', profileController.profileAddFriend);
+    router.post('/:id/friends/add-friend', profileController.postAddFriend);
 
     // GET delete friends
     router.get('/:id/friends/remove-friends', profileController.getDeleteFriends);

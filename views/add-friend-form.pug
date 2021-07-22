@@ -1,7 +1,7 @@
 extends layout 
 
 block content 
-  a(href="/profile/" + currentUser._id + "/friends") Back
+  a(class="backButton" href="/profile/" + currentUser._id + "/friends") Back
   h1 Look up a friend 
   h3= errorMsg
   form(action="/profile/" + currentUser._id + "/friends/search-friend" method="POST")
@@ -12,11 +12,11 @@ block content
     h3 OR
     label(for="username") Email
     input(name="username" placeholder="email" type="email")
-    button Submit
+    button.button Submit
 
   if foundUsers && foundUsers.length > 0
     form(action="/profile/" + currentUser._id + "/friends/add-friend" method="POST")
       each foundUser in foundUsers 
-        label(for=foundUser.username) #{foundUser.fullname}
-        input(name=foundUser.username value=foundUser._id type="checkbox") 
+        label(for="potentialFriendId") #{foundUser.fullname}
+        input(name="potentialFriendId" value=foundUser._id type="checkbox") 
       button Add friend  

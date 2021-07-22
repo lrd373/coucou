@@ -46,14 +46,16 @@ textarea {
 .button {
   background-color: var(--macaw-pink);
   border: none;
-  border-radius: 5%;
+  border-radius: 10px;
   color: white;
-  font-size: 2.5rem;
-  font-weight: 500;
+  font-family: "Koho", sans-serif;
+  font-size: 2.5rem !important;
+  font-weight: 500 !important;
   margin: 2rem 0;
   text-align: center;
   padding: 1rem;
   width: max-content;
+  height: max-content;
 }
 
 .backButton {
@@ -104,11 +106,50 @@ textarea {
 }
 
 /********************** Login **********************/
-.oauthLogo {
-  width: 20px;
-  height: 20px;
+
+.loginContainer {
+  padding: 0.8rem 2rem;
 }
 
+.welcomeMsg {
+  font-size: 3rem;
+  margin: 1rem 0;
+}
+
+.loginForm > * {
+  font-size: 2.5rem;
+  margin: 1.75rem 0;
+}
+
+.loginForm input {
+  border: solid 0.25rem var(--macaw-pink);
+  border-radius: 0.75rem;
+  padding: 0.5rem 0.25rem;
+}
+
+.loginButtons {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 2rem;
+}
+
+.oauthHeader{
+  font-size: 3rem;
+}
+
+.oauthLink {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  font-size: 3rem;
+}
+
+.oauthLogo {
+  width: 3rem;
+  height: 3rem;
+}
 
 /********************** Header **********************/
 header {
@@ -159,6 +200,7 @@ nav > * {
   font-size: 2.3rem;
   position: relative;
   bottom: 0.25rem;
+  letter-spacing: 0.01rem;
 }
 
 /********************** Profile **********************/

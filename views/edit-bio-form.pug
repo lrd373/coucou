@@ -4,11 +4,14 @@ block content
   .editBioFormContainer
     a(class="backButton editBio" href="/profile/" + profile.user + "/posts") Back
     h1.formHeader Edit Your Bio
+    if errors 
+      h2 Errors: 
+      each error in errors 
+        p= error.msg
     form(action="" method="POST")
       textarea(name="bio", cols="30", rows="8") 
-        if profile 
+        if profile && !inputs
           | #{profile.bio}
+        if profile && inputs 
+          | #{inputs.bio}
       button.button Submit
-      
-
-

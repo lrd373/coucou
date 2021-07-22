@@ -298,37 +298,57 @@ exports.postToProfileBioEdit = [
   unescape('&#8216;', "'"),
   unescape('&#8217;', "'"),
 
+  unescape('&lt;', '<'),
+  unescape('&gt;', '>'),
+
   (req, res, next) => {
 
     if (req.user) {
 
+      const errors = validationResult(req);
+
+      // There were errors in the request body! Oh no!
+      // Re-render the form with sanitized values filling in inputs
+      if (!errors.isEmpty()) {
+        Profile.findOne({'user': req.user._id})
+        .exec((err, profile) => {
+          if (err) { return next(err); }
+          res.render('edit-bio-form', { profile: profile, inputs: req.body, errors: errors.array() });
+        });
+      }
+
+      // No errors in request body, you're good to go!
+      else {
         // Find and update Profile object
         async.waterfall([
-            function(callback) {
-                Profile.findOne({'user': req.user._id}).exec((err, profileData) => {
-                if (err) {return next(err); }
-                callback(null, profileData);
-                });
-            },
-            function(profileData, callback) {
+          function(callback) {
+              Profile.findOne({'user': req.user._id}).exec((err, profileData) => {
+              if (err) {return next(err); }
+              callback(null, profileData);
+              });
+          },
+          function(profileData, callback) {
 
-                const updatedProfile = new Profile({
-                media: profileData.media,
-                user: profileData.user,
-                profilePic: profileData.profilePic,
-                _id: profileData._id,
-                bio: cleanBio
-                });
+              const updatedProfile = new Profile({
+              media: profileData.media,
+              user: profileData.user,
+              profilePic: profileData.profilePic,
+              _id: profileData._id,
+              bio: req.body.bio
+              });
 
-                Profile.findByIdAndUpdate(profileData._id, updatedProfile, { new: true }, function(err, theProfile) {
-                if (err) { return next(err); }
-                callback(null, theProfile);
-                });
-            }
+              Profile.findByIdAndUpdate(profileData._id, updatedProfile, { new: true }, function(err, theProfile) {
+              if (err) { return next(err); }
+              callback(null, theProfile);
+              });
+          }
         ], function(err, updatedProfile) {
-            if (err) { return next(err); }
-            res.redirect('/profile/'+req.user._id);
+          if (err) { return next(err); }
+          res.redirect('/profile/'+req.user._id);
         });
+      }
+
+    // NO LOGGED IN USER
     } else {
         res.redirect('/');
     }

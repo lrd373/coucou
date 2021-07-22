@@ -4,7 +4,7 @@ module.exports = (escaped, char) => function (req, res, next) {
   unescapeCharacter(req.query, escaped, char);
   unescapeCharacter(req.body, escaped, char);
   return next();
-}
+};
 
 function unescapeCharacter (obj, escaped, char) {
   if (obj) {

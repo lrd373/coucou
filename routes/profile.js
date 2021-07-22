@@ -29,6 +29,9 @@ const Post = require('../models/postSchema');
 const Reaction = require('../models/reactionSchema');
 
 const profileController = require('../controllers/profileController');
+const profilePostsController = require('../controllers/profilePosts');
+const profileFriendsController = require('../controllers/profileFriends');
+const profilePhotosController = require('../controllers/profilePhotos');
 
 
 // *************************** PROFILE  ********************************
@@ -58,19 +61,19 @@ router.get('/:id', profileController.getProfilePage);
     // *************************** POSTS TAB  ********************************
 
     // GET posts tab
-    router.get('/:id/posts', profileController.getProfilePosts);
+    router.get('/:id/posts', profilePostsController.getProfilePosts);
 
     // GET new post form
-    router.get('/:id/posts/create-post', profileController.getNewPostForm);
+    router.get('/:id/posts/create-post', profilePostsController.getNewPostForm);
 
     // POST -- create new post
-    router.post('/:id/posts/create-post', profileController.postNewPostForm);
+    router.post('/:id/posts/create-post', profilePostsController.postNewPostForm);
 
     // GET delete posts tab
-    router.get('/:id/posts/delete-posts', profileController.getDeletePosts);
+    router.get('/:id/posts/delete-posts', profilePostsController.getDeletePosts);
 
     // POST delete posts
-    router.post('/:id/posts/delete-posts', profileController.postDeletePosts);
+    router.post('/:id/posts/delete-posts', profilePostsController.postDeletePosts);
 
 
     // *************************** FRIENDS TAB  ********************************

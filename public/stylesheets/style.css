@@ -1,13 +1,22 @@
 :root {
   --macaw-pink: rgb(211, 50, 112);
+  --light-macaw-pink: rgba(211, 50, 112, 0.527);
   --teal: #77ffff;
   --light-teal: #92fcfcab;
   --dark-teal: #1e4444;
 }
 
+* , *:before, *:after{ 
+  box-sizing:border-box; 
+  -moz-box-sizing:border-box; 
+  -webkit-box-sizing:border-box; 
+  -ms-box-sizing:border-box;
+}
+
 body {
   font: 1rem "KoHo", sans-serif;
   margin: 0;
+  width: 100%;
 }
 
 a {
@@ -107,9 +116,10 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  padding: 10px 10px 5px;
+  padding: 1rem 1rem 0.5rem;
   position: relative;
   z-index: 10;
+  width: 100%;
 }
 
 .brand {
@@ -146,7 +156,7 @@ nav > * {
 }
 
 .navLink {
-  font-size: 2.5rem;
+  font-size: 2.3rem;
   position: relative;
   bottom: 0.25rem;
 }
@@ -163,9 +173,10 @@ nav > * {
   .profileHeader {
     background-color: var(--light-teal);
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     margin: 0;
-    padding: 2rem 2rem 1rem;
+    padding: 2rem 1.5rem 1rem;
+    width: 100%;
   }
 
   .profileNameAndBio {
@@ -205,7 +216,7 @@ nav > * {
 
   .profileHeaderEditButtons {
     position: absolute;
-    right: -1.5rem;
+    right: 0;
     bottom: 0;
     text-align: right;
   }
@@ -218,12 +229,12 @@ nav > * {
   /************ Profile Tab Headers ******************/
   .tabHeaders {
     background-color: var(--light-teal);
-    padding: 0.8rem 2rem;
+    padding: 0.8rem 1.5rem;
   }
 
   .tabHeader {
-    font-size: 2.5rem;
-    margin: 0 0.5rem;
+    font-size: 2.3rem;
+    margin: 0 0.6rem;
   }
 
   .clickedTab {
@@ -232,16 +243,39 @@ nav > * {
   }
 
   .tabContent {
-    padding: 0.5rem 2rem;
+    font-size: 2.3rem;
+    padding: 1rem 2rem;
   }
 
   .tabEditButtonContainer {
+    margin-top: 1rem;
     text-align: right;
   }
 
   .tabEditButton {
     display: block;
     font-size: 1.9rem;
+  }
+
+  .noContentMessage  {
+    font-size: 2.3rem;
+  }
+
+  /************ Profile Posts Tab ******************/
+  .deletePostCheckbox {
+    display: inline;
+  }
+
+  .postCard {
+    background-color: var(--light-macaw-pink);
+    border-radius: 15px 50px 50px;
+    padding: 0.75rem 2rem;
+    margin: 1rem 0;
+  }
+
+  .postText {
+    font-size: 2rem;
+    margin: 1rem 0;
   }
 
   /************ Profile Friends Tab ******************/
@@ -274,15 +308,6 @@ nav > * {
     bottom:-4px;
   }
 
-  /************ Profile Posts Tab ******************/
-  .deletePostCheckbox {
-    display: inline;
-  }
-
-  .postCard {
-    display: flex;
-  }
-
 /************* EDIT BIO FORM *******************/
 
 .editBioFormContainer {
@@ -291,4 +316,12 @@ nav > * {
 
 .backButton.editBio {
   font-size: 2.5rem;
+}
+
+/************* FOOTER *******************/
+.flaticon {
+  font-size: 0.8rem;
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }

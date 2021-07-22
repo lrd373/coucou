@@ -63,16 +63,7 @@ block content
       //----------- Posts Tab -------------
       if (tab === "posts")
         .profilePosts.tabContent
-          .tabEditButtonContainer
-            - if (currentUser._id.toString() === user._id.toString()) 
-              a.tabEditButton(href="/profile/" + currentUser._id + "/posts/create-post") 
-                img(class="editIcon" src="/images/edit.png", alt="Create New Post")
-                | Create new post
-              if (!deletePosts && user.posts.length > 0 && !newPostForm)
-                a.tabEditButton(href="/profile/" + currentUser._id + "/posts/delete-posts") 
-                  img(class="editIcon" src="/images/trash.png", alt="Delete posts")
-                  | Delete posts
-
+          
           if newPostForm 
             a(href=profile.url) X 
             form(action="/profile/" + currentUser._id + "/posts/create-post" method="POST")
@@ -91,7 +82,10 @@ block content
                       input.deletePostCheckbox(type="checkbox") 
                   .postContent
                     p.postText= post.text
-                    p.postDate Last Updated: #{post.date_last_updated_local}
+                    p.postDate Posted: #{post.date_last_updated_local}
+          //- If there are no posts
+          if (!deletePosts && user.posts.length === 0 && !newPostForm)
+            p.noContentMessage No posts yet 🤫
             
           //- Delete posts
           if (deletePosts && currentUser._id.toString() === user._id.toString())
@@ -105,8 +99,18 @@ block content
                       input.deletePostCheckbox(type="checkbox" id=post._id name="postID" value=post._id) 
                     .postContent
                       p.postText= post.text
-                      p.postDate Last Updated: #{post.date_last_updated_local}
-                      
+                      p.postDate Posted: #{post.date_last_updated_local}
+
+          .tabEditButtonContainer
+            - if (currentUser._id.toString() === user._id.toString()) 
+              a.tabEditButton(href="/profile/" + currentUser._id + "/posts/create-post") 
+                img(class="editIcon" src="/images/edit.png", alt="Create New Post")
+                | Create new post
+              if (!deletePosts && user.posts.length > 0 && !newPostForm)
+                a.tabEditButton(href="/profile/" + currentUser._id + "/posts/delete-posts") 
+                  img(class="editIcon" src="/images/trash.png", alt="Delete posts")
+                  | Delete posts      
+
       //----------- Friends Tab -------------
       if (tab === "friends")
         if (!newFriendForm)

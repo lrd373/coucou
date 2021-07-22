@@ -224,6 +224,7 @@ nav > * {
   .editProfile {
     font-size: 1.9rem;
     display: block;
+    margin: 0.75rem 0;
   }
 
   /************ Profile Tab Headers ******************/
@@ -255,6 +256,7 @@ nav > * {
   .tabEditButton {
     display: block;
     font-size: 1.9rem;
+    margin: 0.75rem 0;
   }
 
   .noContentMessage  {
@@ -282,7 +284,7 @@ nav > * {
 
   .friendLink {
     display: block;
-    font-size: 2rem;
+    font-size: 2.5rem;
   }
 
   .friendCard {

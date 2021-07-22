@@ -118,6 +118,7 @@ block content
                
             //- Regular friend list display
             if user.friends.length > 0 && !deleteFriends
+              h3 Click on a name to view their profile:
               each friend in user.friends 
                 a.friendLink(href=friend.url) #{friend.fullname}
             
@@ -160,6 +161,9 @@ block content
               src=`data:${img.img.contentType};base64,${Buffer.from(img.img.data).toString("base64")}`, 
               alt=img.altText)
           - if (currentUser._id.toString() === user._id.toString() && !deletePhotos)
-            a(href="/profile/" + currentUser._id +"/photos/add-photos") Add photos
-            if profile.media
-              a(href="/profile/" + currentUser._id + "/photos/delete-photos") Delete photos
+            .tabEditButtonContainer
+              a.tabEditButton(href="/profile/" + currentUser._id +"/photos/add-photos") + Add photos
+              if profile.media
+                a.tabEditButton(href="/profile/" + currentUser._id + "/photos/delete-photos") 
+                  img(class="editIcon" src="/images/trash.png", alt="Delete photos")
+                  | Delete photos

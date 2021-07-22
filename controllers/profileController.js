@@ -515,6 +515,21 @@ exports.getDeletePosts = (req, res, next) => {
             } 
         }, (err, results) => {
             if (err) { return next(err); }
+
+            // Sort posts by date last updated
+            let profileUserPosts = results.user.posts;
+            profileUserPosts.sort((postObj1, postObj2) => {
+              if (postObj1.date_last_updated < postObj2.date_last_updated) {
+                return 1;
+              }
+              if (postObj1.date_last_updated.getTime() === postObj2.date_last_updated.getTime()) {
+                return 0;
+              } else {
+                return -1;
+              }
+            });
+
+            results.user.posts = profileUserPosts;
             
             res.render('profile', { deletePosts: true, currentUser: req.user, user: results.user, profile: results.profile, tab: "posts" });
         });

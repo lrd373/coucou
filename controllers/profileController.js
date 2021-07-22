@@ -896,12 +896,10 @@ exports.getDeleteFriends = (req, res, next) => {
 };
 
 exports.postDeleteFriends = (req, res, next) => {
-    const friendIDs = req.body.friendID;
-    
-    console.log(friendIDs);
-    console.log("Is array? " + Array.isArray(friendIDs));
+  if (req.user) {
+    let friendIDs = req.body.friendID;
 
-    function processFriendDeletion (friendToDelete, callback) {
+    function processDeleteFriend (friendToDelete, iterCallback) {
       async.waterfall([
   
           // Remove friend from logged in user 
@@ -919,6 +917,8 @@ exports.postDeleteFriends = (req, res, next) => {
               // Find and update user
               User.findByIdAndUpdate(req.user._id, {'friends': userFriends}, {new: true}, function(err, theUser) {
                   if (err) { return next(err); }
+                  console.log("User's updated friends list:");
+                  console.log(theUser.friends);
                   return callback(null);
               });
           },
@@ -927,6 +927,7 @@ exports.postDeleteFriends = (req, res, next) => {
           function(callback) {
               User.findById(friendToDelete).exec((err, theFriend) => {
                   if (err) { return next(err); }
+                  console.log("Found friend's record in MongoDB");
                   return callback(null, theFriend);
               });
           },
@@ -943,37 +944,42 @@ exports.postDeleteFriends = (req, res, next) => {
               if (loggedUserIndex !== -1) {
                   friendsFriends.splice(loggedUserIndex, 1);
               }
-              console.log("New friend's friend list");
-              console.log(friendsFriends);
+              
 
               // Find and update friend doc
               User.findByIdAndUpdate(theFriend._id, {'friends': friendsFriends}, {new:true}, function(err, theUpdatedFriend) {
                   if (err) { return next(err); }
-
+                  console.log("Updated friend's friend list");
+                  console.log(theUpdatedFriend.friends);
                   return callback(null, theUpdatedFriend);
               });
           }
 
       ], (err, results) => {
           if (err) { return next(err); }
-          return (results, callback);
+          iterCallback();
       });
     }
 
     // There is only 1 friend to delete
     if (!Array.isArray(friendIDs)) {
-      processFriendDeletion(friendIDs);
+      console.log("Found only 1 friend to delete. Converting ID to array.");
+
+      let friendIDsAsList = [];
+      friendIDsAsList.push(friendIDs);
+      friendIDs = friendIDsAsList;
+
+      console.log(friendIDs);
     }
     
-    // There are more than 1 friends to delete
-    else {
-        console.log("More than 1 friend to delete");
+    async.forEachLimit(friendIDs, 1, processDeleteFriend, (err, results) => {
+        if (err) { return next(err); }
+        
+        console.log("Delete friend loop completed");
+        res.redirect(req.user.url + "/friends");
 
-        async.map(friendIDs, processFriendDeletion, (err, results) => {
-            if (err) { return next(err); }
-            console.log(results);
-        });
-    }  
-
-    res.redirect(req.user.url + "/friends");
+    });  
+  } else {
+    res.redirect('/');
+  }
 };

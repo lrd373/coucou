@@ -472,9 +472,10 @@ exports.getDeletePosts = (req, res, next) => {
 };
 
 exports.postDeletePosts = (req, res, next) => {
-    const postIDs = req.body.postID;
+  if (req.user) {
+    let postIDs = req.body.postID;
 
-    function processDeletePost (currentPostToDelete, callback) {
+    function processDeletePost (currentPostToDelete, iterCallback) {
         async.waterfall([
 
             // Remove post from user 
@@ -504,23 +505,31 @@ exports.postDeletePosts = (req, res, next) => {
             }
         ], (err, results) => {
             if (err) { return next(err); }
+            iterCallback();
         });
     }
 
     // There is only one post to delete:
     if (!Array.isArray(postIDs)) {
-        
-        processDeletePost(postIDs);
-    } 
+      console.log("Only 1 post to delete. Converting ID to array.");
 
-    // There is more than 1 post to delete
-    else {
-        async.map(postIDs, processDeletePost, (err, results) => {
-            if (err) { return next(err); }
-        });
-    }
+      let postIDsAsList = [];
+      postIDsAsList.push(postIDs);
+      postIDs = postIDsAsList;
+
+      console.log(postIDs);
+    } 
     
-    res.redirect(req.user.url + "/posts");
+    async.forEachLimit(postIDs, 1, processDeletePost, (err, results) => {
+        if (err) { return next(err); }
+
+        console.log("Delete post loop completed");
+        res.redirect(req.user.url + "/posts");
+    });
+  
+  } else {
+    res.redirect('/');
+  }
 };
 
 exports.getProfileMediaForm = (req, res, next) => {

@@ -121,6 +121,8 @@ block content
               h3 Click on a name to view their profile:
               each friend in user.friends 
                 a.friendLink(href=friend.url) #{friend.fullname}
+            if user.friends.length === 0 && !deleteFriends
+              p.noContentMessage No friends yet 😢
             
             //- Remove friends form
             if user.friends.length > 0 && deleteFriends && currentUser._id.toString() === user._id.toString()
@@ -160,10 +162,12 @@ block content
               class="profileMediaPic"
               src=`data:${img.img.contentType};base64,${Buffer.from(img.img.data).toString("base64")}`, 
               alt=img.altText)
+          if profile.media.length === 0 
+            p.noContentMessage No photos yet 🙈
           - if (currentUser._id.toString() === user._id.toString() && !deletePhotos)
             .tabEditButtonContainer
               a.tabEditButton(href="/profile/" + currentUser._id +"/photos/add-photos") + Add photos
-              if profile.media
+              if profile.media.length > 0
                 a.tabEditButton(href="/profile/" + currentUser._id + "/photos/delete-photos") 
                   img(class="editIcon" src="/images/trash.png", alt="Delete photos")
                   | Delete photos

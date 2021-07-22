@@ -3,6 +3,8 @@ const path = require('path');
 const async = require('async');
 const router = express.Router();
 const mongoose = require('mongoose');
+const { body, validationResult } = require('express-validator');
+const unescape = require('./unescape');
 
 // Image upload packages
 const fs = require('fs');
@@ -270,11 +272,35 @@ exports.getProfileBioEdit = (req, res) => {
 };
 
 // POST to profile edit form
-exports.postToProfileBioEdit = (req, res, next) => {
+exports.postToProfileBioEdit = [
+  // Sanitize input
+  body('bio')
+  .trim()
+  .optional({ checkFalsy: true })
+  .matches(/[À-ÿa-z0-9 .,!"'-]|\r\n|\r|\n/gmi)
+  .escape(),
+
+  // Replace escaped HTML entities with characters
+  unescape('&#38;', '&'),
+  unescape('&#x26;', '&'),
+  unescape('&amp;', '&'),
+
+  unescape('&#34;', '"'),
+  unescape('&ldquo;', '"'),
+  unescape('&rdquo;', '"'),
+  unescape('&#8220; ', '"'),
+  unescape('&#8221;', '"'),
+
+  unescape('&#39;', "'"),
+  unescape('&#x27;', "'"),
+  unescape('&lsquo;', "'"),
+  unescape('&rsquo;', "'"),
+  unescape('&#8216;', "'"),
+  unescape('&#8217;', "'"),
+
+  (req, res, next) => {
 
     if (req.user) {
-        // Sanitize inputs
-        const cleanBio = DOMPurify.sanitize(req.body.bio);
 
         // Find and update Profile object
         async.waterfall([
@@ -306,7 +332,7 @@ exports.postToProfileBioEdit = (req, res, next) => {
     } else {
         res.redirect('/');
     }
-};
+}];
 
 // GET edit profile pic form
 exports.getProfilePicEdit = (req, res, next) => {

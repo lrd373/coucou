@@ -100,19 +100,19 @@ router.get('/:id', profileController.getProfilePage);
     // *************************** PHOTOS TAB  ********************************
 
     // GET profile photos tab
-    router.get('/:id/photos', profileController.getProfilePhotos);
+    router.get('/:id/photos', profilePhotosController.getProfilePhotos);
 
     // GET new profile media form
-    router.get('/:id/photos/add-photos', profileController.getProfileMediaForm);
+    router.get('/:id/photos/add-photos', profilePhotosController.getProfileMediaForm);
 
     // POST to new profile media form
-    router.post('/:id/photos/add-photos', profileController.postProfileMediaForm);
+    router.post('/:id/photos/add-photos', profilePhotosController.postProfileMediaForm);
 
     // GET delete photo form
-    router.get('/:id/photos/delete-photos', profileController.getDeletePhotos);
+    router.get('/:id/photos/delete-photos', profilePhotosController.getDeletePhotos);
 
     // POST delete photo form
-    router.post('/:id/photos/delete-photos', profileController.postDeletePhotos);
+    router.post('/:id/photos/delete-photos', profilePhotosController.postDeletePhotos);
 
 
 module.exports = router;

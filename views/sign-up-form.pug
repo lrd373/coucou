@@ -1,16 +1,17 @@
 extends layout 
 
 block content 
-  h1 Sign Up 
-  if errorMsg 
-    h2=errorMsg
-  form(action="" method="POST")
-    label(for="first_name") First Name 
-    input(name="first_name" placeholder="first name" type="text")
-    label(for="last_name") Last Name 
-    input(name="last_name" placeholder="last name" type="text")  
-    label(for="username") Username 
-    input(name="username" placeholder="username" type="email") 
-    label(for="password") Password 
-    input(name="password" type="password")
-    button Sign Up  
+  .loginContainer
+    h1.welcomeMsg Sign Up 
+    if errorMsg 
+      h2=errorMsg
+    form.loginForm(action="" method="POST")
+      label(for="first_name") First Name 
+      input(name="first_name" placeholder="first name" type="text")
+      label(for="last_name") Last Name 
+      input(name="last_name" placeholder="last name" type="text")  
+      label(for="username") Username 
+      input(name="username" placeholder="username" type="email") 
+      label(for="password") Password 
+      input(name="password" type="password")
+      button.button Sign Up  

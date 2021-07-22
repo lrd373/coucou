@@ -177,77 +177,83 @@ exports.getDeletePhotos = (req, res, next) => {
 
 // POST delete photos form
 exports.postDeletePhotos = (req, res, next) => {
-    if (req.user) {
-        let photoIDs = req.body.photoID;
+  if (req.user) {
+    let photoIDs = req.body.photoID;
 
-        function processDeletePhoto(photoID, callback) {
-            // Series of async functions to remove photo from MongoDB
-            async.waterfall([
-                
-                // Remove photo doc from MongoDB
-                function(callback) {
-                    console.log("ID of photo to be removed: " + photoID);
-                    Media.findByIdAndRemove(photoID, err => {
-                        if (err) {return next(err); }
-                        callback(null);
-                    });
-                },
+    function processDeletePhoto(photoID, iterCallback) {
+        // Series of async functions to remove photo from MongoDB
+        async.waterfall([
+            
+          // Remove photo doc from MongoDB
+          function(callback) {
+              console.log("ID of photo to be removed: " + photoID);
+              Media.findByIdAndRemove(photoID, err => {
+                  if (err) {return next(err); }
+                  console.log("Photo successfully removed from MongoDB");
+                  callback(null);
+              });
+          },
 
-                // Find the profile where this media has been linked
-                // pass that profile id on in callback function
-                function(callback) {
-                    Profile.findOne({'media': photoID}, (err, theProfile) => {
-                        if (err) { return next(err); }
-                        console.log("Profile id to be updated: " + theProfile._id);
-                        callback(null, theProfile);
-                    });
-                },
+          // Find the profile where this media has been linked
+          // pass that profile id on in callback function
+          function(callback) {
+              Profile.findOne({'media': photoID}, (err, theProfile) => {
+                  if (err) { return next(err); }
+                  console.log("Found profile to be updated for user " + theProfile.user);
+                  callback(null, theProfile);
+              });
+          },
 
-                // Remove photoID from profile media array
-                // Update profile doc in MongoDB
-                function(theProfile, callback) {
-                    let profileMedia = theProfile.media;
-                    console.log("Profile media:");
-                    console.log(profileMedia);
+          // Remove photoID from profile media array
+          // Update profile doc in MongoDB
+          function(theProfile, callback) {
+              let profileMedia = theProfile.media;
+              console.log("Profile photo IDs:");
+              console.log(profileMedia);
 
-                    let photoIndex = profileMedia.findIndex(photo => photo._id.toString() === photoID.toString());
-                    console.log("Index of photo in profile media array " + photoIndex);
+              let photoIndex = profileMedia.findIndex(photo => photo._id.toString() === photoID.toString());
+              console.log("Index of photo in profile media array " + photoIndex);
 
-                    if (photoIndex !== -1) {
-                        profileMedia.splice(photoIndex, 1);
-                    }
+              if (photoIndex !== -1) {
+                  profileMedia.splice(photoIndex, 1);
+              }
 
-                    Profile.findByIdAndUpdate(theProfile._id, {'media': profileMedia}, {new:true}, (err, updatedProfile) => {
-                        if (err) { return next(err); }
+              Profile.findByIdAndUpdate(theProfile._id, {'media': profileMedia}, {new:true}, (err, updatedProfile) => {
+                  if (err) { return next(err); }
 
-                        console.log("Updated profile media:");
-                        console.log(updatedProfile.media);
-                        callback(null);
-                    });
-                }
+                  console.log("Updated profile media:");
+                  console.log(updatedProfile.media);
+                  callback(null);
+              });
+          }
 
-            ], (err, results) => {
-                if (err) { return next(err); }
-            });
-        }
-
-        // Only 1 Photo to delete
-        if (!Array.isArray(photoIDs)) {
-            processDeletePhoto(photoIDs);
-        } 
-        
-        // More than 1 photo to delete
-        else {
-            async.map(photoIDs, processDeletePhoto, (err, results) => {
-                if (err) { return next(err); }
-            });
-        }
-
-        res.redirect(req.user.url + '/photos');
-
-    } else {
-        res.redirect('/');
+        ], (err, results) => {
+            if (err) { return next(err); }
+            iterCallback();
+        });
     }
+
+    // Only 1 Photo to delete
+    if (!Array.isArray(photoIDs)) {
+      console.log("Only 1 photo to delete. Converting to array.");
+
+      let photoIDsAsList = [];
+      photoIDsAsList.push(photoIDs);
+      photoIDs = photoIDsAsList;
+
+      console.log(photoIDs);
+    } 
+    
+    async.forEachLimit(photoIDs, 1, processDeletePhoto, (err, results) => {
+        if (err) { return next(err); }
+
+        console.log("Delete photos loop completed");
+        res.redirect(req.user.url + '/photos');
+    });
+
+  } else {
+      res.redirect('/');
+  }
 };
 
 // GET profile edit form

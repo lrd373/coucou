@@ -79,22 +79,22 @@ router.get('/:id', profileController.getProfilePage);
     // *************************** FRIENDS TAB  ********************************
 
     // GET default friends tab
-    router.get('/:id/friends', profileController.getProfileFriends);
+    router.get('/:id/friends', profileFriendsController.getProfileFriends);
 
     // GET friends tab with new friend form
-    router.get('/:id/friends/add-friend-form', profileController.getAddFriendForm);
+    router.get('/:id/friends/add-friend-form', profileFriendsController.getAddFriendForm);
 
     // POST friends tab search by friend details
-    router.post('/:id/friends/search-friend', profileController.postSearchFriend);
+    router.post('/:id/friends/search-friend', profileFriendsController.postSearchFriend);
 
     // POST friends tab with new friend form
-    router.post('/:id/friends/add-friend', profileController.postAddFriend);
+    router.post('/:id/friends/add-friend', profileFriendsController.postAddFriend);
 
     // GET delete friends
-    router.get('/:id/friends/remove-friends', profileController.getDeleteFriends);
+    router.get('/:id/friends/remove-friends', profileFriendsController.getDeleteFriends);
 
     // POST delete friends
-    router.post('/:id/friends/remove-friends', profileController.postDeleteFriends);
+    router.post('/:id/friends/remove-friends', profileFriendsController.postDeleteFriends);
 
 
     // *************************** PHOTOS TAB  ********************************

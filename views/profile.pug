@@ -8,26 +8,26 @@ block content
       
       //- Upload profile pic form
       if newProfilePic 
-          .modalContainer
-            form(
-              class="modalContent" 
-              action="/profile/" + currentUser._id + "/edit-profile-picture" 
-              method="POST" 
-              enctype="multipart/form-data"
-            )
-              a(class="backButton" href="/profile/" + currentUser._id +"/posts") Back
-              label.formHeader(for="profilePic") Upload your picture 
-              input(type="file" name="profilePic" accept="image/png, image/jpeg" required)
-              button.button Submit
+        .modalContainer
+          form(
+            class="modalContent" 
+            action="/profile/" + currentUser._id + "/edit-profile-picture" 
+            method="POST" 
+            enctype="multipart/form-data"
+          )
+            a(class="backButton" href="/profile/" + currentUser._id +"/posts") Back
+            label.formHeader(for="profilePic") Upload your picture 
+            input(type="file" name="profilePic" accept="image/png, image/jpeg" required)
+            button.button Submit
               
-
-      .profilePicContainer
-        if profile.profilePic 
-          //- Display binary image
-          img(
-            class="profilePic"
-            src=`data:${profile.profilePic.img.contentType};base64,${Buffer.from(profile.profilePic.img.data).toString("base64")}`, 
-            alt=profile.profilePic.altText)
+      .picHalf
+        .profilePicContainer
+          if profile.profilePic 
+            //- Display binary image
+            img(
+              class="profilePic"
+              src=`data:${profile.profilePic.img.contentType};base64,${Buffer.from(profile.profilePic.img.data).toString("base64")}`, 
+              alt=profile.profilePic.altText)
       
       .profileNameAndBio
         .profileFullname
@@ -37,12 +37,12 @@ block content
             p.profileBio= profile.bio
         .profileHeaderEditButtons 
           - if (currentUser._id.toString() === user._id.toString())
-              a(class="editProfile" href="/profile/" + currentUser._id + "/edit-profile-picture") 
-                img(class="editIcon" src="/images/edit.png", alt="Edit profile picture")
-                | Profile Picture
-              a(class="editProfile" href="/profile/" + currentUser._id + '/edit-profile-bio') 
-                img(class="editIcon" src="/images/edit.png", alt="Edit profile picture")
-                | Bio
+            a(class="editProfile" href="/profile/" + currentUser._id + "/edit-profile-picture") 
+              img(class="editIcon" src="/images/edit.png", alt="Edit profile picture")
+              | Profile Picture
+            a(class="editProfile" href="/profile/" + currentUser._id + '/edit-profile-bio') 
+              img(class="editIcon" src="/images/edit.png", alt="Edit profile picture")
+              | Bio
     
     //----------- PROFILE TAB CONTENT -------------
     .profileTabs
@@ -87,6 +87,7 @@ block content
           //- Delete posts
           if (deletePosts && currentUser._id.toString() === user._id.toString())
             a.backButton(href="/profile/" + currentUser._id + "/posts/") Back
+            h1.formHeader Click on the posts you'd like to delete
             form(action="/profile/" + currentUser._id + "/posts/delete-posts", method="POST")
               if user.posts.length > 0
                 button.button Submit
@@ -124,6 +125,7 @@ block content
             //- Remove friends form
             if user.friends.length > 0 && deleteFriends && currentUser._id.toString() === user._id.toString()
               a.backButton(href="/profile/" + currentUser._id + "/friends/") Back
+              h1.formHeader Click on the friends you'd like to remove
               form(action="/profile/" + currentUser._id + "/friends/remove-friends" method="POST")
                 button.button Submit
                 each friend in user.friends

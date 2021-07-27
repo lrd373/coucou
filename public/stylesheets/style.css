@@ -39,6 +39,7 @@ form > * {
   display: block;
   font-family: "KoHo", sans-serif;
   margin: 10px 0;
+  text-transform: capitalize;
 }
 
 .formHeader {
@@ -50,6 +51,7 @@ input {
   border: solid 0.25rem var(--macaw-pink);
   border-radius: 0.75rem;
   padding: 0.5rem 0.25rem;
+  width: 100%;
 }
 
 .deleteCheckbox {
@@ -252,15 +254,16 @@ nav > * {
   .profileHeader {
     background-color: var(--light-teal);
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     margin: 0;
-    padding: 2rem 1.5rem 1rem;
+    padding: 2rem 1.5rem 0;
     width: 100%;
   }
 
   .profileNameAndBio {
     position: relative;
     margin-left: 2rem;
+    width: 100%;
   }
 
   .userFullName {
@@ -309,7 +312,7 @@ nav > * {
   /************ Profile Tab Headers ******************/
   .tabHeaders {
     background-color: var(--light-teal);
-    padding: 0.8rem 1.5rem;
+    padding: 1rem 1.5rem 1.5rem;
   }
 
   .tabHeader {

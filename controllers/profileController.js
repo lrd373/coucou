@@ -57,7 +57,7 @@ exports.getProfileBioEdit = (req, res) => {
         Profile.findOne({'user': req.user._id})
         .exec((err, profile) => {
             if (err) { return next(err); }
-            res.render('edit-bio-form', { profile: profile });
+            res.render('edit-bio-form', { profile: profile, currentUser: req.user });
         }); 
     } else {
         res.redirect('/');
@@ -106,7 +106,7 @@ exports.postToProfileBioEdit = [
         Profile.findOne({'user': req.user._id})
         .exec((err, profile) => {
           if (err) { return next(err); }
-          res.render('edit-bio-form', { profile: profile, inputs: req.body, errors: errors.array() });
+          res.render('edit-bio-form', { profile: profile, inputs: req.body, errors: errors.array(), currentUser: req.user });
         });
       }
 
@@ -163,7 +163,7 @@ exports.getProfilePicEdit = (req, res, next) => {
             }
         }, (err, results) => {
             if (err) { return next(err); }
-            res.render('profile', { newProfilePic: true, user: results.user, profile: results.profile});
+            res.render('profile', { newProfilePic: true, currentUser: req.user, user: results.user, profile: results.profile});
         });
     } else {
         res.redirect('/');

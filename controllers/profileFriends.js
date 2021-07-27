@@ -84,7 +84,8 @@ exports.getAddFriendForm = (req, res, next) => {
 // POST search friend inputs
 exports.postSearchFriend =  (req, res, next) => {
 
-  async.waterfall([
+  if (req.user) {
+    async.waterfall([
 
       // Find users in database based on form data
       function(callback) {
@@ -97,7 +98,7 @@ exports.postSearchFriend =  (req, res, next) => {
             ]}).exec((err, foundUsers) => {
                 if (err) {return next(err); }
                 if (foundUsers.length === 0) {
-                  res.render('add-friend-form', {errorMsg: 'Username not found'});
+                  res.render('add-friend-form', {currentUser: req.user, errorMsg: 'Username not found'});
                 }
                 callback(null, foundUsers);
             });
@@ -108,7 +109,7 @@ exports.postSearchFriend =  (req, res, next) => {
             .exec((err, foundUsers) => {
               if (err) {return next(err); }
               if (foundUsers.length === 0) {
-                  res.render('add-friend-form', {errorMsg: 'First name and last name not found'});
+                  res.render('add-friend-form', {currentUser: req.user, errorMsg: 'First name and last name not found'});
               }
               callback(null, foundUsers);
             });
@@ -119,7 +120,7 @@ exports.postSearchFriend =  (req, res, next) => {
             .exec((err, foundUsers) => {
               if (err) {return next(err); }
               if (foundUsers.length === 0) {
-                  res.render('add-friend-form', {errorMsg: 'User last name not found'});
+                  res.render('add-friend-form', {currentUser: req.user, errorMsg: 'User last name not found'});
               }
               callback(null, foundUsers);
             });
@@ -130,14 +131,14 @@ exports.postSearchFriend =  (req, res, next) => {
             .exec((err, foundUsers) => {
               if (err) {return next(err); }
               if (foundUsers.length === 0) {
-                  res.render('add-friend-form', {errorMsg: 'User first name not found'});
+                  res.render('add-friend-form', {currentUser: req.user, errorMsg: 'User first name not found'});
               }
               callback(null, foundUsers);
             });
     
         // No search criteria were entered
         } else {
-            res.render('add-friend-form', {errorMsg: 'Please fill in at least one field'});
+            res.render('add-friend-form', {currentUser: req.user, errorMsg: 'Please fill in at least one field'});
         }
       },
 
@@ -204,13 +205,15 @@ exports.postSearchFriend =  (req, res, next) => {
 
           callback(null, {possibleFriends, errorMsg});
       },
+    ], (err, results) => {
+      if (err) { return next(err); }
 
-  ], (err, results) => {
-    if (err) { return next(err); }
+      res.render('add-friend-form', { currentUser: req.user, foundUsers: results.possibleFriends, errorMsg: results.errorMsg });
+    });
 
-    res.render('add-friend-form', { foundUsers: results.possibleFriends, errorMsg: results.errorMsg });
-  });
-  
+  } else {
+    res.redirect('/');
+  }
 };
 
 // POST to add friend route

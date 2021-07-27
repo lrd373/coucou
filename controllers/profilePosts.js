@@ -86,7 +86,7 @@ exports.getNewPostForm = (req, res, next) => {
           }
       }, (err, results) => {
           if (err) { return next(err); }
-          res.render('profile', {newPostForm: true, user: results.user, profile: results.profile, tab: 'posts'});
+          res.render('profile', {newPostForm: true, currentUser: req.user, user: results.user, profile: results.profile, tab: 'posts'});
       });
   } else {
       res.redirect('/');

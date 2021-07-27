@@ -165,7 +165,7 @@ exports.getDeletePhotos = (req, res, next) => {
     .populate('media')
     .exec((err, theProfile) => {
       if (err) { return next(err); }
-      res.render('delete-photos', { profile: theProfile });
+      res.render('delete-photos', { currentUser: req.user, profile: theProfile });
     });
   } else {
     res.redirect('/');

@@ -65,12 +65,12 @@ block content
         .profilePosts.tabContent
           
           if newPostForm 
-            a(href=profile.url) X 
+            a.backButton(href=profile.url) Back
             form(action="/profile/" + currentUser._id + "/posts/create-post" method="POST")
-              label(for="text") Your Message 
+              label.formHeader(for="text") Your Message 
               textarea(name="text", cols="30", rows="10")
                 //-  Media to come
-              button Submit
+              button.button Submit
             
           //- Regular posts tab, if there are posts
           if (!deletePosts && user.posts.length > 0 && !newPostForm)
@@ -102,7 +102,7 @@ block content
                       p.postDate Posted: #{post.date_last_updated_local}
 
           .tabEditButtonContainer
-            - if (currentUser._id.toString() === user._id.toString()) 
+            - if (currentUser._id.toString() === user._id.toString() && !newPostForm) 
               a.tabEditButton(href="/profile/" + currentUser._id + "/posts/create-post") 
                 img(class="editIcon" src="/images/edit.png", alt="Create New Post")
                 | Create new post

@@ -19,6 +19,7 @@ html {
 
 body {
   font: 1rem "KoHo", sans-serif;
+  letter-spacing: 0.01rem;
   margin: 0;
   width: 100%;
 }
@@ -40,7 +41,8 @@ form > * {
 }
 
 .formHeader {
-  font-size: 5rem;
+  font-size: 4rem;
+  margin: 1rem 0;
 }
 
 textarea {
@@ -66,7 +68,7 @@ textarea {
   border: solid 0.3rem var(--macaw-pink);
   border-radius: 0.5rem;
   color: var(--macaw-pink);
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
   padding: 0.75rem;
   width: max-content;
@@ -204,7 +206,6 @@ nav > * {
   font-size: 2.3rem;
   position: relative;
   bottom: 0.25rem;
-  letter-spacing: 0.01rem;
 }
 
 /********************** Profile **********************/
@@ -291,7 +292,7 @@ nav > * {
 
   .tabContent {
     font-size: 2.3rem;
-    padding: 1rem 2rem;
+    padding: 2rem;
   }
 
   .tabEditButtonContainer {
@@ -322,12 +323,12 @@ nav > * {
   }
 
   .postText {
-    font-size: 2.25rem;
+    font-size: 2.35rem;
     margin: 1rem 0;
   }
 
   .postDate {
-    font-size: 1.75rem;
+    font-size: 1.85rem;
   }
 
   /************ Profile Friends Tab ******************/

@@ -45,6 +45,21 @@ form > * {
   margin: 1rem 0;
 }
 
+.deleteCheckbox {
+  -webkit-appearance:none;
+  width: 2rem;
+  height: 2rem;
+  background:white;
+  border-radius: 0.5rem;
+  border: none;
+  margin-top: 1rem;
+  font-size: 1.8rem;
+}
+
+.deleteCheckbox:checked:after {
+  content: "❌";
+}
+
 textarea {
   font-size: 2rem;
 }
@@ -311,9 +326,6 @@ nav > * {
   }
 
   /************ Profile Posts Tab ******************/
-  .deletePostCheckbox {
-    display: inline;
-  }
 
   .postCard {
     background-color: var(--light-macaw-pink);

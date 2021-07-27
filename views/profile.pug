@@ -77,9 +77,6 @@ block content
             if user.posts.length > 0
               each post in user.posts
                 .postCard
-                  if (deletePosts)
-                    .postCheckboxContainer
-                      input.deletePostCheckbox(type="checkbox") 
                   .postContent
                     p.postText= post.text
                     p.postDate Posted: #{post.date_last_updated_local}
@@ -89,20 +86,20 @@ block content
             
           //- Delete posts
           if (deletePosts && currentUser._id.toString() === user._id.toString())
-            a(href="/profile/" + currentUser._id + "/posts/") Cancel
+            a.backButton(href="/profile/" + currentUser._id + "/posts/") Back
             form(action="/profile/" + currentUser._id + "/posts/delete-posts", method="POST")
               if user.posts.length > 0
-                button Submit
+                button.button Submit
                 each post in user.posts
                   .postCard
-                    .postCheckboxContainer
-                      input.deletePostCheckbox(type="checkbox" id=post._id name="postID" value=post._id) 
+                    .checkboxContainer
+                      input.deleteCheckbox(type="checkbox" id=post._id name="postID" value=post._id) 
                     .postContent
                       p.postText= post.text
                       p.postDate Posted: #{post.date_last_updated_local}
 
           .tabEditButtonContainer
-            - if (currentUser._id.toString() === user._id.toString() && !newPostForm) 
+            - if (currentUser._id.toString() === user._id.toString() && !newPostForm && !deletePosts) 
               a.tabEditButton(href="/profile/" + currentUser._id + "/posts/create-post") 
                 img(class="editIcon" src="/images/edit.png", alt="Create New Post")
                 | Create new post
@@ -131,7 +128,7 @@ block content
                 button Submit
                 each friend in user.friends
                   .friendCard 
-                    input(type="checkbox" id=friend._id name="friendID" value=friend._id)
+                    input.deleteCheckbox(type="checkbox" id=friend._id name="friendID" value=friend._id)
                     label(for=friend._id) #{friend.fullname}
 
             //- Edit friends list buttons 

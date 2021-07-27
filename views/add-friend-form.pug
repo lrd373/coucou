@@ -1,22 +1,26 @@
 extends layout 
 
 block content 
-  a(class="backButton" href="/profile/" + currentUser._id + "/friends") Back
-  h1 Look up a friend 
-  h3= errorMsg
-  form(action="/profile/" + currentUser._id + "/friends/search-friend" method="POST")
-    label(for="first_name") First name 
-    input(name="first_name" placeholder="first name" type="text")
-    label(for="last_name") Last name 
-    input(name="last_name" placeholder="last name" type="text")
-    h3 OR
-    label(for="username") Email
-    input(name="username" placeholder="email" type="email")
-    button.button Submit
+  .formContent
+    a(class="backButton" href="/profile/" + currentUser._id + "/friends") Back
+    h1.formHeader Look up a friend 
+    h3= errorMsg
+    form(action="/profile/" + currentUser._id + "/friends/search-friend" method="POST")
+      label.addFriendLabel(for="first_name") First name 
+      input.addFriendInput(name="first_name" placeholder="first name" type="text")
+      label.addFriendLabel(for="last_name") Last name 
+      input.addFriendInput(name="last_name" placeholder="last name" type="text")
+      p.addFriendLabel 
+        strong - OR -
+      label.addFriendLabel(for="username") Email
+      input.addFriendInput(name="username" placeholder="email" type="email")
+      button.button Submit
 
-  if foundUsers && foundUsers.length > 0
-    form(action="/profile/" + currentUser._id + "/friends/add-friend" method="POST")
-      each foundUser in foundUsers 
-        label(for="potentialFriendId") #{foundUser.fullname}
-        input(name="potentialFriendId" value=foundUser._id type="checkbox") 
-      button Add friend  
+    if foundUsers && foundUsers.length > 0
+      h3.formHeader Here's who we found:
+      form(action="/profile/" + currentUser._id + "/friends/add-friend" method="POST")
+        each foundUser in foundUsers
+          .foundUserContainer 
+            input.deleteCheckbox.pinkCheckbox(name="potentialFriendId" value=foundUser._id type="checkbox")
+            label.addFriendLabel(for="potentialFriendId") #{foundUser.fullname} 
+        button.button Add friend(s)  

@@ -46,6 +46,12 @@ form > * {
   margin: 1rem 0;
 }
 
+input {
+  border: solid 0.25rem var(--macaw-pink);
+  border-radius: 0.75rem;
+  padding: 0.5rem 0.25rem;
+}
+
 .deleteCheckbox {
   -webkit-appearance:none;
   width: 2rem;
@@ -416,11 +422,11 @@ nav > * {
 
 /************* DELETE PROFILE PHOTOS FORM *******************/
 
-.deleteFormContent {
+.formContent {
   padding: 2rem;
 }
 
-.deleteFormContent .formHeader {
+.formContent .formHeader {
   margin: 2.5rem 0;
 }
 
@@ -442,6 +448,24 @@ nav > * {
 .deleteImgContainer * {
   margin: 0.5rem 0;
 }
+
+/************* ADD & SEARCH FRIEND FORM *******************/
+
+.addFriendLabel {
+  font-size: 2.5rem;
+}
+
+.addFriendInput {
+  font-size: 2.5rem;
+}
+
+.foundUserContainer {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-start;
+  align-items: center;
+}
+
 
 /************* FOOTER *******************/
 .flaticon {

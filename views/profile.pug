@@ -15,8 +15,8 @@ block content
               method="POST" 
               enctype="multipart/form-data"
             )
-              a(class="backButton" href="/profile/" + currentUser._id +"/posts") ✖️
-              label(class="modalHeader" for="profilePic") Upload your picture 
+              a(class="backButton" href="/profile/" + currentUser._id +"/posts") Back
+              label.formHeader(for="profilePic") Upload your picture 
               input(type="file" name="profilePic" accept="image/png, image/jpeg" required)
               button.button Submit
               
@@ -147,10 +147,10 @@ block content
           if newMediaForm 
             .modalContainer
               form(class="modalContent" action="/profile/" + currentUser._id +"/photos/add-photos" method="POST" enctype="multipart/form-data") 
-                label(for="profilePic") Upload your picture
+                a.backButton(href="/profile/" + currentUser._id +"/photos/") Back 
+                label.formHeader(for="profilePic") Upload your picture
                 input(type="file" name="profileMedia" accept="image/png, image/jpeg" required)
-                button Submit
-                a(class="editCancelBtn" href="/profile/" + currentUser._id +"/photos/") Cancel
+                button.button Submit
           
           //- Display current photos
           if profile.media 

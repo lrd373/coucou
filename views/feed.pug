@@ -1,32 +1,48 @@
 extends layout 
 
 block content 
-  h1=user.first_name + "'s Feed"
-  
-  //------ FRIENDS SECTION ------
-  //- User has friends and they've been posting
-  if user.friends && user.friends.length > 0 && friendPosts.length > 0
-    h2 What your friends have been up to:
-    each postObj in friendPosts
-        h3
-          a(href=postObj.friendUrl)  #{postObj.friendFullname}
-        p #{postObj.post.text}, #{postObj.post.date_last_updated_local}
+  .feedContent
+    .feedHeader
+      img.feedLogo(src="/images/birdbath.png" alt="Your Coucou Bird Bath Feed")
+      h1.feedHeaderText=user.first_name + "'s Feed"
+    
+    .feedBody
 
-  //- User hasn't added any friends yet
-  if !user.friends || user.friends.length === 0
-    h2 You haven't added any friends yet! 
-    a(href="/profile/" + user._id + '/friends/add-friend-form') Add a friend 
+      .feedFriendsContent
+      //------ FRIENDS SECTION ------
+      //- User has friends and they've been posting
+      if user.friends && user.friends.length > 0 && friendPosts.length > 0
+        h2 What your friends have been up to:
+        each postObj in friendPosts
+            .postCard
+              .posterInfo
+                a(href=postObj.friendUrl)  
+                strong #{postObj.friendFullname}
+              .postContent
+                p #{postObj.post.text}
+                p #{postObj.post.date_last_updated_local}
 
-  //- User has added friends, but they haven't posted anything
-  if user.friends && user.friends.length > 0 && friendPosts.length === 0
-    h2 Your friends haven't posted anything! 
-    a(href="/profile/" + user._id + "/friends") See what your friends are up to 
+      //- User hasn't added any friends yet
+      if !user.friends || user.friends.length === 0
+        h2 You haven't added any friends yet 🙁
+        a(href="/profile/" + user._id + '/friends/add-friend-form') + Add a friend 
 
-  //------ CURRENT USER SECTION ------
-  if user.posts && user.posts.length > 0
-    h2 What you've been up to: 
-    each post in user.posts 
-      p #{post.text}, #{post.date_last_updated_local}
-  if !user.posts || user.posts.length === 0
-    h2 You haven't posted anything! 
-    a(href="/profile/" + user._id + "/posts/create-post") Create a post
+      //- User has added friends, but they haven't posted anything
+      if user.friends && user.friends.length > 0 && friendPosts.length === 0
+        h2 Your friends haven't posted anything! 
+        a(href="/profile/" + user._id + "/friends") See what your friends are up to 
+        each friend in user.friends 
+          a.friendLink(href=friend.url) #{friend.fullname}
+
+      .feedCurrentUser
+        //------ CURRENT USER SECTION ------
+        if user.posts && user.posts.length > 0
+          h2 What you've been up to: 
+          each post in user.posts 
+            .postCard 
+              .postContent
+                p #{post.text}
+                p #{post.date_last_updated_local}
+        if !user.posts || user.posts.length === 0
+          h2 You haven't posted anything! 
+          a(href="/profile/" + user._id + "/posts/create-post") Create a post

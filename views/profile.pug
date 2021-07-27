@@ -123,13 +123,13 @@ block content
             
             //- Remove friends form
             if user.friends.length > 0 && deleteFriends && currentUser._id.toString() === user._id.toString()
-              a(href="/profile/" + currentUser._id + "/friends/") Cancel
+              a.backButton(href="/profile/" + currentUser._id + "/friends/") Back
               form(action="/profile/" + currentUser._id + "/friends/remove-friends" method="POST")
-                button Submit
+                button.button Submit
                 each friend in user.friends
                   .friendCard 
-                    input.deleteCheckbox(type="checkbox" id=friend._id name="friendID" value=friend._id)
-                    label(for=friend._id) #{friend.fullname}
+                    input.deleteCheckbox.friendDelete(type="checkbox" id=friend._id name="friendID" value=friend._id)
+                    label.friendLink(for=friend._id) #{friend.fullname}
 
             //- Edit friends list buttons 
             - if (currentUser._id.toString() === user._id.toString() && !deleteFriends)

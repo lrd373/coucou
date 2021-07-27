@@ -52,12 +52,17 @@ form > * {
   background:white;
   border-radius: 0.5rem;
   border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-top: 1rem;
-  font-size: 1.8rem;
 }
 
 .deleteCheckbox:checked:after {
+  color: transparent;
+  text-shadow: 0 0 0 var(--macaw-pink);
   content: "❌";
+  font-size: 1.5rem;
 }
 
 textarea {
@@ -83,9 +88,9 @@ textarea {
   border: solid 0.3rem var(--macaw-pink);
   border-radius: 0.5rem;
   color: var(--macaw-pink);
-  font-size: 1.75rem;
+  font-size: 1.9rem;
   font-weight: 700;
-  padding: 0.75rem;
+  padding: 0.6rem;
   width: max-content;
 }
 
@@ -353,8 +358,13 @@ nav > * {
   .friendCard {
     display: flex;
     justify-content: flex-start;
-    align-items: baseline;
+    align-items: center;
+    margin: 1rem 0;
     gap: 1rem;
+  }
+
+  .friendDelete {
+    border: solid 0.3rem var(--macaw-pink) !important;  
   }
 
   /************ Profile Photos Tab ******************/

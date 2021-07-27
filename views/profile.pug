@@ -150,19 +150,20 @@ block content
                 label(for="profilePic") Upload your picture
                 input(type="file" name="profileMedia" accept="image/png, image/jpeg" required)
                 button Submit
-                a(class="editCancelBtn" href="/profile") Cancel
+                a(class="editCancelBtn" href="/profile/" + currentUser._id +"/photos/") Cancel
           
           //- Display current photos
           if profile.media 
-            each img in profile.media 
-              img(
-              class="profileMediaPic"
-              src=`data:${img.img.contentType};base64,${Buffer.from(img.img.data).toString("base64")}`, 
-              alt=img.altText)
+            each img in profile.media
+              .profileImgContainer 
+                img(
+                class="profileMediaPic"
+                src=`data:${img.img.contentType};base64,${Buffer.from(img.img.data).toString("base64")}`, 
+                alt=img.altText)
           if profile.media.length === 0 
             p.noContentMessage No photos yet 🙈
           - if (currentUser._id.toString() === user._id.toString() && !deletePhotos)
-            .tabEditButtonContainer
+            .tabEditButtonContainer.photoEditButtons
               a.tabEditButton(href="/profile/" + currentUser._id +"/photos/add-photos") + Add photos
               if profile.media.length > 0
                 a.tabEditButton(href="/profile/" + currentUser._id + "/photos/delete-photos") 

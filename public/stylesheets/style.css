@@ -88,8 +88,8 @@ textarea {
   border: solid 0.3rem var(--macaw-pink);
   border-radius: 0.5rem;
   color: var(--macaw-pink);
-  font-size: 1.9rem;
-  font-weight: 700;
+  font-size: 2.25rem !important;
+  font-weight: 500 !important;
   padding: 0.6rem;
   width: max-content;
 }
@@ -369,19 +369,32 @@ nav > * {
 
   /************ Profile Photos Tab ******************/
   .profileMedia {
-    display: block;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
     margin: 0;
+  }
+
+  .profileImgContainer {
+    border-radius: 3rem;
+    border: solid 0.5rem var(--macaw-pink);
+    margin: 1rem;
+    padding: 1rem;
+    width: 13rem;
+    height: 13rem;
+    overflow: hidden;
   }
 
   .profileMediaPic {
     display: inline-block;
-    width: 100px;
-    height: auto;
+    min-width: 10rem;
+    min-height: 10rem;
+    max-width: 10rem;
+    max-height: 10rem;
+    object-fit: cover;
   }
 
-  .wavy-border.profileMediaTop {
-    position: relative;
-    bottom:-4px;
+  .photoEditButtons {
+    grid-column: 1/5;
   }
 
 /************* EDIT BIO FORM *******************/

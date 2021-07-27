@@ -128,7 +128,7 @@ block content
                 button.button Submit
                 each friend in user.friends
                   .friendCard 
-                    input.deleteCheckbox.friendDelete(type="checkbox" id=friend._id name="friendID" value=friend._id)
+                    input.deleteCheckbox.pinkCheckbox(type="checkbox" id=friend._id name="friendID" value=friend._id)
                     label.friendLink(for=friend._id) #{friend.fullname}
 
             //- Edit friends list buttons 

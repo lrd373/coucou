@@ -65,6 +65,10 @@ form > * {
   font-size: 1.5rem;
 }
 
+.pinkCheckbox {
+  border: solid 0.3rem var(--macaw-pink) !important;  
+}
+
 textarea {
   font-size: 2rem;
 }
@@ -363,10 +367,6 @@ nav > * {
     gap: 1rem;
   }
 
-  .friendDelete {
-    border: solid 0.3rem var(--macaw-pink) !important;  
-  }
-
   /************ Profile Photos Tab ******************/
   .profileMedia {
     display: grid;
@@ -380,6 +380,7 @@ nav > * {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
     margin: 1rem;
     padding: 1rem;
     width: 13.5rem;
@@ -409,6 +410,35 @@ nav > * {
 
 .backButton.editBio {
   font-size: 2.5rem;
+}
+
+/************* DELETE PROFILE PHOTOS FORM *******************/
+
+.deleteFormContent {
+  padding: 2rem;
+}
+
+.deleteFormContent .formHeader {
+  margin: 2.5rem 0;
+}
+
+.deleteImagesSection {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.deleteImgContainer {
+  border-radius: 3rem;
+  border: solid 0.5rem var(--macaw-pink);
+  margin: 1rem;
+  padding: 1rem;
+  width: 17.5rem;
+  height: 17.5rem;
+  overflow: hidden;
+}
+
+.deleteImgContainer * {
+  margin: 0.5rem 0;
 }
 
 /************* FOOTER *******************/

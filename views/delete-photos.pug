@@ -1,14 +1,17 @@
 extends layout
 
 block content 
-  h1 Click which photos you'd like to delete:
-  if profile.media 
-    form(action="/profile/" + profile.user._id + "/photos/delete-photos" method="POST")
-      button Submit
-      each img in profile.media
-        .deleteImgContainer 
-          input(type="checkbox" name="photoID" value=img._id)
-          img(
-          class="profileMediaPic"
-          src=`data:${img.img.contentType};base64,${Buffer.from(img.img.data).toString("base64")}`, 
-          alt=img.altText)
+  .deleteFormContent
+    a.backButton(href="/profile/" + profile.user._id + "/photos/") Back
+    h1.formHeader Click which photos you'd like to delete:
+    if profile.media 
+      form.deleteImgForm(action="/profile/" + profile.user._id + "/photos/delete-photos" method="POST")
+        button.button Submit
+        .deleteImagesSection
+          each img in profile.media
+            .deleteImgContainer 
+              input.deleteCheckbox.pinkCheckbox(type="checkbox" name="photoID" value=img._id)
+              img(
+              class="profileMediaPic"
+              src=`data:${img.img.contentType};base64,${Buffer.from(img.img.data).toString("base64")}`, 
+              alt=img.altText)

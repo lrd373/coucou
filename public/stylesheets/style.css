@@ -377,19 +377,23 @@ nav > * {
   .profileImgContainer {
     border-radius: 3rem;
     border: solid 0.5rem var(--macaw-pink);
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin: 1rem;
     padding: 1rem;
-    width: 13rem;
-    height: 13rem;
+    width: 13.5rem;
+    height: 13.5rem;
     overflow: hidden;
   }
 
   .profileMediaPic {
+    border-radius: 2rem;
     display: inline-block;
-    min-width: 10rem;
-    min-height: 10rem;
-    max-width: 10rem;
-    max-height: 10rem;
+    min-width: 10.75rem;
+    min-height: 10.75rem;
+    max-width: 10.75rem;
+    max-height: 10.75rem;
     object-fit: cover;
   }
 

@@ -16,7 +16,7 @@ PostSchema.virtual('date_created_local').get(function(){
 });
 
 PostSchema.virtual('date_last_updated_local').get(function(){
-    return (DateTime.fromJSDate(this.date_last_updated).toLocaleString());
+    return (DateTime.fromJSDate(this.date_last_updated).toLocaleString(DateTime.DATE_FULL));
 });
 
 

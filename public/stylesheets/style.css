@@ -4,10 +4,12 @@
   --teal: #77ffff;
   --light-teal: #92fcfcab;
   --dark-teal: #1e4444;
+  font-size: 15px;
 }
 
 html {
   font-size: 15px;
+  height: 100%;
 }
 
 * , *:before, *:after{ 
@@ -18,10 +20,15 @@ html {
 }
 
 body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   font: 1rem "KoHo", sans-serif;
   letter-spacing: 0.01rem;
+  position: relative;
   margin: 0;
   width: 100%;
+  height: 100%;
 }
 
 a {
@@ -39,7 +46,6 @@ form > * {
   display: block;
   font-family: "KoHo", sans-serif;
   margin: 10px 0;
-  text-transform: capitalize;
 }
 
 .formHeader {
@@ -108,6 +114,7 @@ textarea {
 }
 
 .editIcon {
+  font-size: 2.25em;
   width: 2rem;
   height: 2rem;
   margin-right: 0.5rem;
@@ -341,11 +348,11 @@ nav > * {
   }
 
   .tabEditButtonText {
-    font-size: 2.25rem;
+    font-size: 30px;
   }
 
   .noContentMessage  {
-    font-size: 2.3rem;
+    font-size: 2.5rem;
     grid-column: 1/6;
   }
 
@@ -382,8 +389,14 @@ nav > * {
     gap: 1rem;
   }
 
+  /* An attempt at forcing tabEditButtons on friends tab to be same size 
+    as buttons on every other tab */
+  .tabEditButtonLink.friendTab {
+    margin: 0.45rem 0; 
+  }
+
   .tabEditButtonText.friendTab {
-    font-size: 2rem;
+    font-size: 30px;
   }
 
   /************ Profile Photos Tab ******************/
@@ -509,10 +522,15 @@ nav > * {
   font-size: 1.55rem;
 }
 
+.feedButton {
+  display: block;
+  font-size: 2rem;
+}
+
 /************* FOOTER *******************/
-.flaticon {
-  font-size: 0.8rem;
-  position: absolute;
+.flaticon p, .flaticon a {
+  font-size: 0.5rem;
+  /* position: absolute;
   bottom: 0;
-  right: 0;
+  right: 0; */
 }

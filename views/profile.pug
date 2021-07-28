@@ -137,10 +137,12 @@ block content
             - if (currentUser._id.toString() === user._id.toString() && !deleteFriends)
               .tabEditButtonContainer
                 a.tabEditButtonLink.friendTab(href="/profile/" + currentUser._id + "/friends/add-friend-form") 
-                  span.tabEditButtonText.friendTab + Add friends
+                  span.editIcon + 
+                  span.tabEditButtonText.friendTab Add friends
                 if user.friends.length > 0
                   a.tabEditButtonLink.friendTab(href="/profile/" + currentUser._id + "/friends/remove-friends") 
-                    span.tabEditButtonText.friendTab - Remove friends
+                    span.editIcon - 
+                    span.tabEditButtonText.friendTab Remove friends
 
       //----------- Photos Tab -------------
       if (tab === "photos")
@@ -164,11 +166,14 @@ block content
                 alt=img.altText)
           if profile.media.length === 0 
             p.noContentMessage No photos yet 🙈
+          
+          //- Edit photos buttons
           - if (currentUser._id.toString() === user._id.toString() && !deletePhotos)
             .tabEditButtonContainer.photoEditButtons
               a.tabEditButtonLink.photoTab(href="/profile/" + currentUser._id +"/photos/add-photos") 
-                span.tabEditButtonText.photoTab + Add photos
+                span.editIcon +
+                span.tabEditButtonText Add photos
               if profile.media.length > 0
                 a.tabEditButtonLink.photoTab(href="/profile/" + currentUser._id + "/photos/delete-photos") 
                   img(class="editIcon" src="/images/trash.png", alt="Delete photos")
-                  span.tabEditButtonText.photoTab Delete photos
+                  span.tabEditButtonText Delete photos

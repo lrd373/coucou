@@ -17,7 +17,7 @@ block content
             .postCard
               .posterInfo
                 a(href=postObj.friendUrl)  
-                strong #{postObj.friendFullname}
+                  strong #{postObj.friendFullname}
               .postContent
                 p #{postObj.post.text}
                 p #{postObj.post.date_last_updated_local}
@@ -25,12 +25,12 @@ block content
       //- User hasn't added any friends yet
       if !user.friends || user.friends.length === 0
         h2 You haven't added any friends yet 🙁
-        a(href="/profile/" + user._id + '/friends/add-friend-form') + Add a friend 
+        a.feedButton(href="/profile/" + user._id + '/friends/add-friend-form') + Add a friend 
 
       //- User has added friends, but they haven't posted anything
       if user.friends && user.friends.length > 0 && friendPosts.length === 0
         h2 Your friends haven't posted anything! 
-        a(href="/profile/" + user._id + "/friends") See what your friends are up to 
+        a.feedButton(href="/profile/" + user._id + "/friends") See what your friends are up to 
         each friend in user.friends 
           a.friendLink(href=friend.url) #{friend.fullname}
 
@@ -45,4 +45,4 @@ block content
                 p #{post.date_last_updated_local}
         if !user.posts || user.posts.length === 0
           h2 You haven't posted anything! 
-          a(href="/profile/" + user._id + "/posts/create-post") Create a post
+          a.feedButton(href="/profile/" + user._id + "/posts/create-post") Create a post

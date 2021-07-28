@@ -14,19 +14,21 @@ html
     
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
-    header
-      a.brand(href="/")
-        img(id="coucou-macaw" src="/images/macaw.png", alt="Coucou logo")
-        h1.logo Coucou
-      nav 
-        if currentUser
-          a.navLink(href="/profile") Profile 
-          a.navLink(href="/feed") Feed
-          a.navLink(href="/log-out") Log Out  
-        else 
-          a.navLink(href="/") Log In
-          a.navLink(href="/sign-up") Sign Up
-    block content
+    .headerAndContent
+      header
+        a.brand(href="/")
+          img(id="coucou-macaw" src="/images/macaw.png", alt="Coucou logo")
+          h1.logo Coucou
+        nav 
+          if currentUser
+            a.navLink(href="/profile") Profile 
+            a.navLink(href="/feed") Feed
+            a.navLink(href="/log-out") Log Out  
+          else 
+            a.navLink(href="/") Log In
+            a.navLink(href="/sign-up") Sign Up
+      
+      block content
     
     .flaticon
       p Icons made by 

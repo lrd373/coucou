@@ -16,11 +16,10 @@ block content
         each postObj in friendPosts
             .postCard
               .posterInfo
-                a(href=postObj.friendUrl)  
-                  strong #{postObj.friendFullname}
+                a.friendLink(href=postObj.friendUrl) #{postObj.friendFullname}
               .postContent
-                p #{postObj.post.text}
-                p #{postObj.post.date_last_updated_local}
+                p.postText #{postObj.post.text}
+                p.postDate #{postObj.post.date_last_updated_local}
 
       //- User hasn't added any friends yet
       if !user.friends || user.friends.length === 0
@@ -41,8 +40,8 @@ block content
           each post in user.posts 
             .postCard 
               .postContent
-                p #{post.text}
-                p #{post.date_last_updated_local}
+                p.postText #{post.text}
+                p.postDate #{post.date_last_updated_local}
         if !user.posts || user.posts.length === 0
           h2 You haven't posted anything! 
           a.feedButton(href="/profile/" + user._id + "/posts/create-post") Create a post

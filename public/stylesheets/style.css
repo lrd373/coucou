@@ -387,6 +387,7 @@ nav > * {
     align-items: center;
     margin: 1rem 0;
     gap: 1rem;
+    width: 100%;
   }
 
   /* An attempt at forcing tabEditButtons on friends tab to be same size 
@@ -454,7 +455,7 @@ nav > * {
   padding: 2rem;
 }
 
-.formContent .formHeader {
+.formHeader {
   margin: 2.5rem 0;
 }
 
@@ -543,17 +544,22 @@ nav > * {
 
 @media (min-width: 1000px) {
 
+  /* General */
   .backButton {
     font-size: 1.5rem;
   }
 
   .formHeader {
     font-size: 2rem;
-    margin: 2rem 0;
+    margin: 1.5rem 0;
   }
 
   textarea {
     font-size: 1rem;
+  }
+
+  input[type="file"] {
+    font-size: 2rem;
   }
 
   .button {
@@ -566,7 +572,41 @@ nav > * {
     height: 1rem;
     border-radius: 0.25rem;
   }
-  
+
+  .pinkCheckbox {
+    width: 1.25rem;
+    height: 1.25rem;
+    padding: 0;
+  }
+
+  .deleteCheckbox:checked:after {
+    font-size: 1rem;
+  }
+
+  .noContentMessage {
+    font-size: 2rem;
+    margin: 1rem 0;
+  }
+
+  /* Log-In Screen */
+
+  .welcomeMsg {
+    font-size: 2rem;
+  }
+
+  .loginForm > * {
+    font-size: 1.75rem;
+    margin: 1.45rem 0;
+  }
+
+  .loginButtons {
+    margin: 0;
+  }
+
+  .oauthHeader {
+    margin: 0;
+  }
+
   /* Nav Bar */
   #coucou-macaw {
     width: 40px;
@@ -579,6 +619,12 @@ nav > * {
 
   .navLink {
     font-size: 1.75rem;
+    transition: color 0.25s ease-in-out;
+  }
+
+  .navLink:hover {
+    color: var(--dark-teal);
+    transition: color 0.25s ease-in-out;
   }
 
   /* Profile */
@@ -629,7 +675,46 @@ nav > * {
     font-size: 1.25rem;
   }
 
-
-
   /* FRIENDS tab */
+
+  h3 {
+    font-size: 2rem;
+    margin: 1rem 0;
+  }
+
+  .friendLink {
+    font-size: 1.75rem;
+  }
+
+  .tabEditButtonText.friendTab {
+    font-size: 1.25rem;
+  }
+
+  .tabEditButtonLink.friendTab .editIcon {
+    font-size: 1.25rem;
+  }
+
+  .addFriendLabel {
+    font-size: 2rem;
+  }
+
+  /* Photos Tab */
+
+  .tabEditButtonLink.photoTab .editIcon {
+    font-size: 1.25rem;
+  }
+
+  /* Feed */
+  .feedHeaderText {
+    font-size: 3rem;
+  }
+
+  .feedBody h2 {
+    font-size: 1.9rem;
+  }
+
+  .feedButton {
+    font-size: 1.75rem;
+  }
+
 }

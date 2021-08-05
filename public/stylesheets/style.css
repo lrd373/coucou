@@ -201,6 +201,7 @@ textarea {
 /********************** Header **********************/
 header {
   background-color: var(--teal);
+  box-shadow: 0 0.2rem 0.15rem #1e4444a1;
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -360,6 +361,7 @@ nav > * {
 
   .postCard {
     background-color: var(--light-macaw-pink);
+    box-shadow: 0.15rem 0.25rem 0.25rem rgba(95, 95, 95, 0.726);
     border-radius: 15px 50px 50px;
     padding: 0.75rem 2rem;
     margin: 1rem 0;
